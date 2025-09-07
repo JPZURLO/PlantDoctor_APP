@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView // ✅ Importar TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,26 +16,36 @@ class CreateNewPasswordActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
 
-    // ✅ Variável para guardar o token real que virá do link
+    // Variável para guardar o token que virá do link
     private var resetToken: String? = null
+    // ✅ Variável para guardar o e-mail que virá do link
+    private var userEmail: String? = null
+
+    // ✅ Declaração do novo componente de UI
+    private lateinit var tvUserEmail: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_new_password)
 
-        // ✅ PASSO 1: Chamar a função para extrair o token do link que abriu esta Activity
+        // ✅ PASSO 1: Chamar a função para extrair os dados do link que abriu esta Activity
         handleIntent(intent)
 
-        // Se, por algum motivo, a Activity abriu sem um token, não podemos continuar.
-        if (resetToken == null) {
-            Toast.makeText(this, "Token de redefinição inválido ou ausente.", Toast.LENGTH_LONG).show()
+        // Se, por algum motivo, a Activity abriu sem um token ou e-mail, não podemos continuar.
+        if (resetToken == null || userEmail == null) {
+            Toast.makeText(this, "Link de redefinição inválido ou dados ausentes.", Toast.LENGTH_LONG).show()
             finish() // Fecha a Activity
-            return // Para a execução do onCreate
+            return   // Para a execução do onCreate
         }
 
+        // ✅ PASSO 2: Inicializar os componentes de UI
+        tvUserEmail = findViewById(R.id.tv_user_email)
         val etNewPassword = findViewById<EditText>(R.id.et_new_password)
         val etConfirmPassword = findViewById<EditText>(R.id.et_confirm_password)
         val btnSavePassword = findViewById<Button>(R.id.btn_save_password)
+
+        // ✅ PASSO 3: Exibir o e-mail do usuário no campo bloqueado
+        tvUserEmail.text = userEmail
 
         btnSavePassword.setOnClickListener {
             val newPassword = etNewPassword.text.toString().trim()
@@ -42,7 +53,7 @@ class CreateNewPasswordActivity : AppCompatActivity() {
 
             if (newPassword.isNotEmpty() && confirmPassword.isNotEmpty()) {
                 if (newPassword == confirmPassword) {
-                    // ✅ PASSO 2: Usar o token real (resetToken) em vez do placeholder
+                    // Usar o token real (resetToken) que foi extraído do link
                     val request = ResetPasswordRequest(token = resetToken!!, newPassword = newPassword)
                     authViewModel.resetPassword(request)
                 } else {
@@ -57,7 +68,7 @@ class CreateNewPasswordActivity : AppCompatActivity() {
     }
 
     /**
-     * ✅ PASSO 3: Adicionar a função que lê o link (Intent) e extrai o token.
+     * ✅ PASSO 4: MODIFICADO - Função que lê o link (Intent) e extrai o TOKEN e o E-MAIL.
      */
     private fun handleIntent(intent: Intent?) {
         val action: String? = intent?.action
@@ -66,8 +77,11 @@ class CreateNewPasswordActivity : AppCompatActivity() {
         // Verifica se a Activity foi aberta por um link (ACTION_VIEW)
         if (Intent.ACTION_VIEW == action && data != null) {
             // Extrai o parâmetro chamado "token" da URL
-            // Ex: https://.../reset?token=ESTE_VALOR_AQUI
+            // Ex: plantdoctor://reset-password?token=ESTE_VALOR&email=...
             resetToken = data.getQueryParameter("token")
+
+            // ✅ Extrai o novo parâmetro chamado "email" da URL
+            userEmail = data.getQueryParameter("email")
         }
     }
 

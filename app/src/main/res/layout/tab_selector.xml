@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ✅ Adicionado o namespace do Android para resolver os erros do editor -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Estado quando a aba está selecionada (bolinha preenchida) -->
+    <item android:drawable="@drawable/tab_dot_selected" android:state_selected="true" />
+    <!-- Estado padrão (bolinha vazia) -->
+    <item android:drawable="@drawable/tab_dot_default" />
+</selector>

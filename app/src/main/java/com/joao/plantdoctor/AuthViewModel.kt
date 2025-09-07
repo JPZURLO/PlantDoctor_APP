@@ -11,6 +11,7 @@ import com.joao.plantdoctor.models.ResetPasswordRequest
 import com.joao.plantdoctor.models.UserRequest
 import com.joao.plantdoctor.network.RetrofitClient
 import kotlinx.coroutines.launch
+import org.json.JSONObject // Importar a classe JSONObject
 
 /**
  * ViewModel unificado para lidar com toda a lógica de autenticação:
@@ -18,11 +19,9 @@ import kotlinx.coroutines.launch
  */
 class AuthViewModel : ViewModel() {
 
-
     private val apiService = RetrofitClient.apiService
 
     // --- LiveData para o Registo ---
-    // A sua Activity irá observar este resultado
     private val _registerResult = MutableLiveData<Result<ApiResponse>>()
     val registerResult: LiveData<Result<ApiResponse>> get() = _registerResult
 
@@ -37,10 +36,19 @@ class AuthViewModel : ViewModel() {
     private val _resetPasswordResult = MutableLiveData<Result<ApiResponse>>()
     val resetPasswordResult: LiveData<Result<ApiResponse>> get() = _resetPasswordResult
 
-
-
-
-    // AuthViewModel.kt
+    /**
+     * ✅ NOVO: Função auxiliar para extrair a mensagem de erro do corpo JSON.
+     * Isto evita que o JSON completo seja mostrado ao utilizador.
+     */
+    private fun parseErrorMessage(errorBody: String?): String {
+        return try {
+            val jsonObj = JSONObject(errorBody!!)
+            jsonObj.getString("message")
+        } catch (e: Exception) {
+            // Se falhar a extração, retorna o corpo do erro original ou uma mensagem padrão.
+            errorBody ?: "Ocorreu um erro desconhecido."
+        }
+    }
 
     /**
      * Solicita o envio de um e-mail de recuperação de senha.
@@ -48,13 +56,12 @@ class AuthViewModel : ViewModel() {
     fun requestPasswordReset(email: String) {
         viewModelScope.launch {
             try {
-                // Supondo que sua função na ApiService se chame 'requestPasswordReset'
                 val response = apiService.requestPasswordReset(email)
                 if (response.isSuccessful && response.body() != null) {
                     _requestResetResult.postValue(Result.success(response.body()!!))
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Não foi possível processar o pedido."
-                    _requestResetResult.postValue(Result.failure(Exception(errorMsg)))
+                    val errorMessage = parseErrorMessage(response.errorBody()?.string())
+                    _requestResetResult.postValue(Result.failure(Exception(errorMessage)))
                 }
             } catch (e: Exception) {
                 _requestResetResult.postValue(Result.failure(Exception("Falha na ligação: ${e.message}")))
@@ -68,13 +75,12 @@ class AuthViewModel : ViewModel() {
     fun resetPassword(request: ResetPasswordRequest) {
         viewModelScope.launch {
             try {
-                // ✅ Bloco de simulação removido e substituído pela chamada real da API
                 val response = apiService.resetPassword(request)
                 if (response.isSuccessful && response.body() != null) {
                     _resetPasswordResult.postValue(Result.success(response.body()!!))
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Token inválido ou expirado."
-                    _resetPasswordResult.postValue(Result.failure(Exception(errorMsg)))
+                    val errorMessage = parseErrorMessage(response.errorBody()?.string())
+                    _resetPasswordResult.postValue(Result.failure(Exception(errorMessage)))
                 }
             } catch (e: Exception) {
                 _resetPasswordResult.postValue(Result.failure(Exception("Falha na ligação: ${e.message}")))
@@ -82,18 +88,16 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-
-
-
     fun loginUser(loginData: LoginRequest) {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.apiService.login(loginData)
+                val response = apiService.login(loginData)
                 if (response.isSuccessful && response.body() != null) {
                     _loginResult.postValue(Result.success(response.body()!!))
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Credenciais inválidas"
-                    _loginResult.postValue(Result.failure(Exception(errorMsg)))
+                    // ✅ CORRIGIDO: Agora extrai a mensagem de erro do JSON.
+                    val errorMessage = parseErrorMessage(response.errorBody()?.string())
+                    _loginResult.postValue(Result.failure(Exception(errorMessage)))
                 }
             } catch (e: Exception) {
                 _loginResult.postValue(Result.failure(e))
@@ -104,20 +108,17 @@ class AuthViewModel : ViewModel() {
     fun registerUser(userData: UserRequest) {
         viewModelScope.launch {
             try {
-                // Supondo que na sua ApiService a função se chama 'register'
                 val response = apiService.register(userData)
                 if (response.isSuccessful && response.body() != null) {
                     _registerResult.postValue(Result.success(response.body()!!))
                 } else {
-                    val errorMsg = response.errorBody()?.string() ?: "Erro ao registar utilizador."
-                    _registerResult.postValue(Result.failure(Exception(errorMsg)))
+                    // ✅ CORRIGIDO: Agora extrai a mensagem de erro do JSON.
+                    val errorMessage = parseErrorMessage(response.errorBody()?.string())
+                    _registerResult.postValue(Result.failure(Exception(errorMessage)))
                 }
             } catch (e: Exception) {
                 _registerResult.postValue(Result.failure(Exception("Falha na ligação: ${e.message}")))
             }
         }
     }
-
-
 }
-

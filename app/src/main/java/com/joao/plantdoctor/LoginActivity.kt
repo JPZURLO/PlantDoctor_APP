@@ -60,12 +60,13 @@ class LoginActivity : AppCompatActivity() {
             // Usando onSuccess e onFailure para tratar o resultado de forma segura.
             result.onSuccess { loginResponse ->
                 // Login bem-sucedido.
-                Toast.makeText(this, "Login bem-sucedido! ${loginResponse.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, loginResponse.message, Toast.LENGTH_SHORT).show()
 
-                // TODO: Salvar o token de autenticação e navegar para a tela principal.
-                // val intent = Intent(this, MainActivity::class.java)
-                // startActivity(intent)
-                // finish() // Fecha a LoginActivity para não poder voltar.
+                // ✅ ALTERADO: Navegar para a OnboardingActivity após o login.
+                val intent = Intent(this, OnboardingActivity::class.java)
+                startActivity(intent)
+                // Fecha a LoginActivity para não poder voltar a ela com o botão "back".
+                finish()
             }
             result.onFailure { error ->
                 // Falha no login. Mostra a mensagem de erro.
@@ -74,4 +75,3 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
-

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
-    <!-- Imagem de fundo -->
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -17,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Cartão semi-transparente central -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -56,6 +54,7 @@
             android:id="@+id/et_email"
             android:layout_width="0dp"
             android:layout_height="48dp"
+            android:autofillHints="emailAddress"
             android:background="@android:color/white"
             android:inputType="textEmailAddress"
             android:paddingStart="12dp"
@@ -63,8 +62,7 @@
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_email_label"
-            android:autofillHints="emailAddress" />
+            app:layout_constraintTop_toBottomOf="@id/tv_email_label" />
 
         <TextView
             android:id="@+id/tv_password_label"
@@ -76,31 +74,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_email" />
 
-        <!-- CORRIGIDO: Uso do TextInputLayout para adicionar o ícone de visibilidade de senha -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_password_label"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/black"
-            app:hintEnabled="false">
+            app:passwordToggleTint="@color/black">
 
+            <!-- ✅✅✅ CORREÇÃO APLICADA AQUI ✅✅✅ -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:background="@android:color/white"
                 android:inputType="textPassword"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- CORRIGIDO: Posição do "Esqueceu a senha?" -->
         <TextView
             android:id="@+id/tv_forgot_password"
             android:layout_width="wrap_content"
@@ -117,8 +113,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="ENTRAR"
             android:backgroundTint="@color/black"
+            android:text="ENTRAR"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_forgot_password" />
@@ -141,12 +137,11 @@
             android:layout_height="100dp"
             android:layout_marginTop="24dp"
             android:src="@drawable/logo_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_register"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_register" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

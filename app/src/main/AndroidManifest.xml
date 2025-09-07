@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.joao.plantdoctor">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -15,6 +14,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="23">
 
+        <!-- MainActivity continua a ser a tela de arranque -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -24,9 +24,26 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".RecoveryActivity" />
+        <!-- ✅ NOVA ACTIVITY DECLARADA AQUI -->
+        <activity
+            android:name=".CultureSelectionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".RecoveryActivity"
+            android:exported="false" />
 
         <activity
             android:name=".CreateNewPasswordActivity"
@@ -35,10 +52,13 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="plantdoctor" android:host="reset-password" />
+                <data
+                    android:host="reset-password"
+                    android:scheme="plantdoctor" />
             </intent-filter>
         </activity>
 
     </application>
 
 </manifest>
+
