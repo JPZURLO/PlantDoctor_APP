@@ -54,8 +54,9 @@ class OnboardingActivity : AppCompatActivity() {
             if (viewPager.currentItem < adapter.itemCount - 1) {
                 viewPager.currentItem += 1
             } else {
-                // ✅ ALTERAÇÃO APLICADA AQUI: Navega para a tela de seleção de culturas
-                val intent = Intent(this, CultureSelectionActivity::class.java)
+                // ✅ ALTERAÇÃO APLICADA: Agora direciona para a HomeActivity
+                // Nota: Isto irá saltar a tela de seleção de culturas.
+                val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
                 finish()
             }

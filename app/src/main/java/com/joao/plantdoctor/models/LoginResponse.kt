@@ -10,5 +10,9 @@ data class LoginResponse(
     val message: String,
 
     @SerializedName("token")
-    val token: String? // O token pode ser nulo se o login falhar ou se a API não o enviar.
+    val token: String?,
+
+    // ✅ NOVO CAMPO: Indica se o utilizador já selecionou culturas.
+    @SerializedName("has_cultures")
+    val hasCultures: Boolean
 )
