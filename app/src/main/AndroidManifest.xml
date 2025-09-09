@@ -46,6 +46,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ManageCulturesActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".RecoveryActivity"
             android:exported="false" />
 

@@ -1,7 +1,8 @@
 package com.joao.plantdoctor
-
+import android.content.Context // Adicione este import no topo do ficheiro
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -57,19 +58,29 @@ class LoginActivity : AppCompatActivity() {
      */
     private fun setupObservers() {
         authViewModel.loginResult.observe(this) { result ->
-            // Usando onSuccess e onFailure para tratar o resultado de forma segura.
             result.onSuccess { loginResponse ->
+
+                // ==========================================================
+                // ▼▼▼ ADICIONE ESTA LINHA PARA IMPRIMIR O TOKEN ▼▼▼
+                // ==========================================================
+                Log.d("TOKEN_DEBUG", "Token Recebido: ${loginResponse.token}")
+                // ==========================================================
+
                 // Login bem-sucedido.
                 Toast.makeText(this, loginResponse.message, Toast.LENGTH_SHORT).show()
 
-                // ✅ ALTERADO: Navegar para a OnboardingActivity após o login.
+                // O resto do seu código para guardar o token e navegar...
+                val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+                with(sharedPrefs.edit()) {
+                    putString("AUTH_TOKEN", loginResponse.token)
+                    apply()
+                }
+
                 val intent = Intent(this, OnboardingActivity::class.java)
                 startActivity(intent)
-                // Fecha a LoginActivity para não poder voltar a ela com o botão "back".
                 finish()
             }
             result.onFailure { error ->
-                // Falha no login. Mostra a mensagem de erro.
                 Toast.makeText(this, "Erro: ${error.message}", Toast.LENGTH_LONG).show()
             }
         }

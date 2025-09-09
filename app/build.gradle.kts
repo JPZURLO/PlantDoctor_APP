@@ -53,7 +53,7 @@ dependencies {
     // Dependências do sistema de Views tradicional - Versões revertidas para estáveis
     implementation("com.google.android.material:material:1.12.0") // Versão estável
     implementation("androidx.constraintlayout:constraintlayout:2.1.4") // Versão estável
-
+    implementation("io.coil-kt:coil:2.5.0")
     // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
