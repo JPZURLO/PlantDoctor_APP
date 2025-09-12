@@ -2,65 +2,53 @@ package com.joao.plantdoctor
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.joao.plantdoctor.ManageCulturesActivity
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
-
-    // Injeta o ViewModel para esta Activity
-    private val homeViewModel: HomeViewModel by viewModels()
-
-    private lateinit var recyclerViewCultures: RecyclerView
-    private lateinit var cultureAdapter: CultureHomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val fabDiagnose = findViewById<FloatingActionButton>(R.id.fab_diagnose)
-        val btnManageCultures = findViewById<TextView>(R.id.btn_manage_cultures)
-        recyclerViewCultures = findViewById(R.id.recycler_view_my_cultures)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav.setOnItemSelectedListener(navListener)
 
-        setupRecyclerView()
-        setupObservers()
-
-        fabDiagnose.setOnClickListener {
-            Toast.makeText(this, "Abrir câmara para diagnóstico...", Toast.LENGTH_SHORT).show()
-        }
-
-        btnManageCultures.setOnClickListener {
-            startActivity(Intent(this, ManageCulturesActivity::class.java))
+        // Carrega o fragmento inicial
+        if (savedInstanceState == null) {
+            openFragment(HomeFragment())
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Sempre que a tela ficar visível, busca os dados mais recentes
-        homeViewModel.fetchMyCultures()
-    }
-
-    private fun setupRecyclerView() {
-        cultureAdapter = CultureHomeAdapter(emptyList()) // Começa com uma lista vazia
-        recyclerViewCultures.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewCultures.adapter = cultureAdapter
-    }
-
-    private fun setupObservers() {
-        homeViewModel.myCultures.observe(this) { result ->
-            result.onSuccess { cultures ->
-                // Atualiza a lista no adapter com os dados vindos da API
-                cultureAdapter.updateCultures(cultures)
+    private val navListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.nav_home -> {
+                openFragment(HomeFragment())
+                return@OnNavigationItemSelectedListener true
             }
-            result.onFailure { error ->
-                Toast.makeText(this, "Erro ao buscar culturas: ${error.message}", Toast.LENGTH_LONG).show()
+            R.id.nav_cultures -> {
+                startActivity(Intent(this, ManageCulturesActivity::class.java))
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.nav_diagnose -> {
+                // TODO: Iniciar a Activity ou Fragment de Diagnóstico
+                Toast.makeText(this, "Diagnóstico clicado!", Toast.LENGTH_SHORT).show()
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.nav_news -> {
+                // TODO: Criar e abrir o Fragment de Notícias
+                Toast.makeText(this, "Notícias clicado!", Toast.LENGTH_SHORT).show()
+                return@OnNavigationItemSelectedListener true
             }
         }
+        false
+    }
+
+    private fun openFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 }
-

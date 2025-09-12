@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
         android:title="Início" />
+
     <item
         android:id="@+id/nav_cultures"
         android:icon="@drawable/ic_leaf"
         android:title="Culturas" />
+
     <item
         android:id="@+id/nav_diagnose"
-        android:title="" /> <!-- Item central vazio para o FAB -->
+        android:icon="@drawable/ic_camera"
+        android:title="Diagnóstico" />
+
     <item
         android:id="@+id/nav_news"
         android:icon="@drawable/ic_news"
         android:title="Notícias" />
-    <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_person"
-        android:title="Perfil" />
+
 </menu>

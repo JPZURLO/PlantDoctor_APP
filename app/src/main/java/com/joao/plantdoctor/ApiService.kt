@@ -43,6 +43,7 @@ interface ApiService {
     @POST("/api/user/cultures")
     suspend fun saveUserCultures(
         @Header("Authorization") token: String,
-        @Body request: SaveCulturesRequest // ✅ 2. ALTERE O TIPO DO PARÂMETRO AQUI
+        // ✅ O TIPO AQUI TEM QUE SER SaveCulturesRequest
+        @Body request: SaveCulturesRequest
     ): Response<ApiResponse>
 }
