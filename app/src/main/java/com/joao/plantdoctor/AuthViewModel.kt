@@ -19,7 +19,7 @@ import org.json.JSONObject // Importar a classe JSONObject
  */
 class AuthViewModel : ViewModel() {
 
-    private val apiService = RetrofitClient.apiService
+    private val apiService = RetrofitClient.plantDoctorApiService
 
     // --- LiveData para o Registo ---
     private val _registerResult = MutableLiveData<Result<ApiResponse>>()

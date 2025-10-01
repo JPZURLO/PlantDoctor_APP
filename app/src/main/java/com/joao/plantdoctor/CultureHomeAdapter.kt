@@ -1,5 +1,6 @@
 package com.joao.plantdoctor
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,19 @@ class CultureHomeAdapter(
             crossfade(true)
             placeholder(R.drawable.ic_leaf) // Imagem de placeholder enquanto carrega
             error(R.drawable.ic_leaf)       // Imagem a ser mostrada em caso de erro
+        }
+        // ✅✅✅ NOVA LÓGICA DE CLIQUE ADICIONADA AQUI ✅✅✅
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            // NOTA: A Activity 'CultureDetailsActivity' ainda não foi criada.
+            // Este é o próximo passo.
+            val intent = Intent(context, CultureDetailsActivity::class.java).apply {
+                // Passa o ID e o nome da cultura para a próxima tela
+                putExtra("CULTURE_ID", culture.id)
+                putExtra("CULTURE_NAME", culture.name)
+                putExtra("CULTURE_IMAGE_URL", culture.imageUrl)
+            }
+            context.startActivity(intent)
         }
     }
 

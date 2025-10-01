@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_news"
         android:title="Notícias" />
 
+    <item
+        android:id="@+id/nav_weather"
+        android:icon="@drawable/ic_weather"
+        android:title="Tempo" />
+
 </menu>

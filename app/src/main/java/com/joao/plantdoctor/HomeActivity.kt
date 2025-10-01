@@ -30,7 +30,7 @@ class HomeActivity : AppCompatActivity() {
             }
             R.id.nav_cultures -> {
                 startActivity(Intent(this, ManageCulturesActivity::class.java))
-                return@OnNavigationItemSelectedListener true
+                return@OnNavigationItemSelectedListener false // Boa prática
             }
             R.id.nav_diagnose -> {
                 // TODO: Iniciar a Activity ou Fragment de Diagnóstico
@@ -40,6 +40,11 @@ class HomeActivity : AppCompatActivity() {
             R.id.nav_news -> {
                 // TODO: Criar e abrir o Fragment de Notícias
                 Toast.makeText(this, "Notícias clicado!", Toast.LENGTH_SHORT).show()
+                return@OnNavigationItemSelectedListener true
+            }
+            // ✅ NOVO CASE ADICIONADO PARA O TEMPO
+            R.id.nav_weather -> {
+                openFragment(WeatherFragment())
                 return@OnNavigationItemSelectedListener true
             }
         }

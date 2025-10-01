@@ -66,6 +66,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CultureDetailsActivity"
+            android:exported="false"
+            android:label="Detalhes da Cultura"
+            android:parentActivityName=".HomeActivity" />
+
     </application>
 
 </manifest>

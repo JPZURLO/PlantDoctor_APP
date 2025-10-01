@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class CultureViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val apiService = RetrofitClient.apiService
+    private val apiService = RetrofitClient.plantDoctorApiService
     private val sharedPrefs = application.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
     // LiveData para a lista de todas as culturas disponíveis

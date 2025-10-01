@@ -1,6 +1,9 @@
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize") // <-- E SUBSTITUÍDA POR ESTA
 }
 
 android {
@@ -73,5 +76,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     // ▼▼▼ ADICIONE ESTA LINHA ABAIXO ▼▼▼
     implementation("androidx.fragment:fragment-ktx:1.7.1")
+
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
 }
 

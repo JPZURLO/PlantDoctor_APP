@@ -15,7 +15,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _myCultures = MutableLiveData<Result<List<Culture>>>()
     val myCultures: LiveData<Result<List<Culture>>> get() = _myCultures
 
-    private val apiService = RetrofitClient.apiService
+    private val apiService = RetrofitClient.plantDoctorApiService
     private val sharedPrefs = application.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
     fun fetchMyCultures() {
