@@ -1,4 +1,4 @@
-package com.joao.plantdoctor
+package com.joao.plantdoctor.viewmodel // ✅ GARANTA QUE O PACOTE ESTÁ CORRETO
 
 import android.app.Application
 import android.content.Context
@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.joao.plantdoctor.models.ApiResponse
 import com.joao.plantdoctor.models.Culture
-import com.joao.plantdoctor.models.SaveCulturesRequest // ✅ 1. ADICIONE ESTE IMPORT
+import com.joao.plantdoctor.models.SaveCulturesRequest
 import com.joao.plantdoctor.network.RetrofitClient
 import kotlinx.coroutines.launch
 
@@ -45,7 +45,7 @@ class CultureViewModel(application: Application) : AndroidViewModel(application)
                 if (response.isSuccessful && response.body() != null) {
                     _allCultures.postValue(Result.success(response.body()!!))
                 } else {
-                    _allCultures.postValue(Result.failure(Exception("Erro ao buscar culturas.")))
+                    _allCultures.postValue(Result.failure(Exception("Erro ao buscar culturas: ${response.code()}")))
                 }
             } catch (e: Exception) {
                 _allCultures.postValue(Result.failure(e))
@@ -65,7 +65,7 @@ class CultureViewModel(application: Application) : AndroidViewModel(application)
                 if (response.isSuccessful && response.body() != null) {
                     _userCultures.postValue(Result.success(response.body()!!))
                 } else {
-                    _userCultures.postValue(Result.failure(Exception("Erro ao buscar as suas culturas.")))
+                    _userCultures.postValue(Result.failure(Exception("Erro ao buscar as suas culturas: ${response.code()}")))
                 }
             } catch (e: Exception) {
                 _userCultures.postValue(Result.failure(e))
@@ -81,14 +81,13 @@ class CultureViewModel(application: Application) : AndroidViewModel(application)
                 return@launch
             }
             try {
-                // ✅ 2. ALTERAÇÃO AQUI: Criar uma instância da nova classe
                 val requestBody = SaveCulturesRequest(cultureIds = cultureIds)
                 val response = apiService.saveUserCultures("Bearer $token", requestBody)
 
                 if (response.isSuccessful && response.body() != null) {
                     _saveResult.postValue(Result.success(response.body()!!))
                 } else {
-                    _saveResult.postValue(Result.failure(Exception("Erro ao guardar culturas.")))
+                    _saveResult.postValue(Result.failure(Exception("Erro ao guardar culturas: ${response.code()}")))
                 }
             } catch (e: Exception) {
                 _saveResult.postValue(Result.failure(e))

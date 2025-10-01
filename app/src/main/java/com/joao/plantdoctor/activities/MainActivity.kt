@@ -1,9 +1,10 @@
-package com.joao.plantdoctor
+package com.joao.plantdoctor.activities
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.joao.plantdoctor.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

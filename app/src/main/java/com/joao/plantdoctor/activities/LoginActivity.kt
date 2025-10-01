@@ -1,5 +1,4 @@
-package com.joao.plantdoctor
-import android.content.Context // Adicione este import no topo do ficheiro
+package com.joao.plantdoctor.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +8,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.joao.plantdoctor.AuthViewModel
+import com.joao.plantdoctor.R
 import com.joao.plantdoctor.models.LoginRequest
 
 class LoginActivity : AppCompatActivity() {
@@ -70,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, loginResponse.message, Toast.LENGTH_SHORT).show()
 
                 // O resto do seu código para guardar o token e navegar...
-                val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+                val sharedPrefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
                 with(sharedPrefs.edit()) {
                     putString("AUTH_TOKEN", loginResponse.token)
                     apply()

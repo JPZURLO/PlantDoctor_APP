@@ -1,13 +1,16 @@
 // RecoveryActivity.kt
-package com.joao.plantdoctor
+package com.joao.plantdoctor.activities
 
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels // Importe esta classe
 import androidx.appcompat.app.AppCompatActivity
+import com.joao.plantdoctor.AuthViewModel
+import com.joao.plantdoctor.R
 
 class RecoveryActivity : AppCompatActivity() {
 
@@ -24,7 +27,7 @@ class RecoveryActivity : AppCompatActivity() {
 
         btnRecover.setOnClickListener {
             val email = etEmail.text.toString().trim()
-            if (email.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
 
                 // ✅ PASSO 2: Chamar a função do ViewModel em vez de mostrar um Toast fixo
                 // A lógica de mostrar Toast e navegar foi movida para o 'setupObservers'

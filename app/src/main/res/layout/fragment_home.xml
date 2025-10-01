@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".HomeFragment">
+    tools:context=".fragments.HomeFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,11 +12,18 @@
         android:text="Minhas Culturas"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_home_cultures"
+        android:id="@+id/recycler_view_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/item_culture_home"
+        tools:orientation="horizontal"/>
 
 </LinearLayout>

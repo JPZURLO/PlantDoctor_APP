@@ -1,4 +1,4 @@
-package com.joao.plantdoctor
+package com.joao.plantdoctor.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.joao.plantdoctor.AuthViewModel
+import com.joao.plantdoctor.R
 import com.joao.plantdoctor.models.UserRequest
 
 class RegisterActivity : AppCompatActivity() {

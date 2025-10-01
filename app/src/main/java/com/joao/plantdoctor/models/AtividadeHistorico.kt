@@ -1,12 +1,23 @@
-package com.joao.plantdoctor.models // Mesmo pacote dos outros modelos
+// No arquivo AtividadeHistorico.kt
+
+package com.joao.plantdoctor.models
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AtividadeHistorico(
-    val id: Long, // Id da atividade
-    val culturaId: Int, // Para saber a qual cultura pertence
-    val descricao: String,
-    val data: String
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("event_date")
+    val eventDate: String, // Corresponde ao 'event_date' da API
+
+    @SerializedName("event_type")
+    val eventType: String, // Corresponde ao 'event_type' da API
+
+    @SerializedName("observation")
+    val observation: String // Corresponde à 'observation' da API
+
 ) : Parcelable

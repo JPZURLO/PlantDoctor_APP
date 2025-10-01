@@ -1,4 +1,4 @@
-package com.joao.plantdoctor
+package com.joao.plantdoctor.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.joao.plantdoctor.ForecastAdapter
+import com.joao.plantdoctor.R
+import com.joao.plantdoctor.WeatherViewModel
 import com.joao.plantdoctor.models.WeatherResponse
 
 class WeatherFragment : Fragment() {

@@ -1,14 +1,27 @@
 package com.joao.plantdoctor.models
 
-import java.util.Date
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-/**
- * Representa uma instância específica de uma cultura plantada pelo usuário.
- */
+@Parcelize
 data class PlantedCulture(
-    val id: String, // Um ID único para este plantio, pode ser gerado aleatoriamente
-    val cultureId: Int, // O ID da cultura original (ex: Milho, Soja)
-    val plantingDate: Date,
-    val predictedHarvestDate: Date,
-    val history: MutableList<HistoryEvent> = mutableListOf()
-)
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("planting_date")
+    val planting_date: String,
+
+    @SerializedName("predicted_harvest_date")
+    val predicted_harvest_date: String?,
+
+    @SerializedName("notes")
+    val notes: String?,
+
+    @SerializedName("culture")
+    val culture: Culture,
+
+    @SerializedName("history_events")
+    val history_events: List<AtividadeHistorico>
+
+) : Parcelable

@@ -22,6 +22,7 @@ class ForecastAdapter(private var forecastDays: List<ForecastDay>) : RecyclerVie
         val iconImageView: ImageView = itemView.findViewById(R.id.image_view_forecast_icon)
         val tempTextView: TextView = itemView.findViewById(R.id.text_view_forecast_temp)
         val rainChanceTextView: TextView = itemView.findViewById(R.id.text_view_rain_chance)
+        val humidityTextView: TextView = itemView.findViewById(R.id.text_view_forecast_humidity)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -36,24 +37,30 @@ class ForecastAdapter(private var forecastDays: List<ForecastDay>) : RecyclerVie
 
         // Formatando a data
         val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        // ✅ CORREÇÃO APLICADA AQUI
         val outputFormatter = DateTimeFormatter.ofPattern("dd 'de' MMMM", Locale.forLanguageTag("pt-BR"))
         val date = LocalDate.parse(day.date, inputFormatter)
         holder.dateTextView.text = date.format(outputFormatter)
 
-        holder.tempTextView.text = "${day.day.maxtemp_c.toInt()}°/${day.day.mintemp_c.toInt()}°"
+        // ✅ TEMPERATURA: Agora usando maxtempC e mintempC
+        holder.tempTextView.text = "${day.day.maxtempC.toInt()}°/${day.day.mintempC.toInt()}°"
 
         Glide.with(holder.itemView.context)
             .load("https:${day.day.condition.icon}")
             .into(holder.iconImageView)
 
-        val chanceOfRain = day.day.daily_chance_of_rain
+        // LÓGICA DE CHUVA
+        val chanceOfRain = day.day.dailyChanceOfRain
         if (chanceOfRain > 0) {
             holder.rainChanceTextView.visibility = View.VISIBLE
-            holder.rainChanceTextView.text = "$chanceOfRain%"
+            holder.rainChanceTextView.text = "Chuva: $chanceOfRain%"
         } else {
             holder.rainChanceTextView.visibility = View.GONE
         }
+
+        // LÓGICA DE UMIDADE
+        val avgHumidity = day.day.avgHumidity.toInt()
+        holder.humidityTextView.visibility = View.VISIBLE
+        holder.humidityTextView.text = "Umidade: $avgHumidity%"
     }
 
     override fun getItemCount() = forecastDays.size

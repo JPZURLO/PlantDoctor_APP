@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecoveryActivity">
+    tools:context=".activities.RecoveryActivity">
 
     <!-- Imagem de fundo, igual à da tela de login para manter a consistência -->
     <ImageView

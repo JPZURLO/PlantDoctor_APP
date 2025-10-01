@@ -1,17 +1,16 @@
 package com.joao.plantdoctor.network
 
-// Imports dos seus modelos de dados existentes
 import com.joao.plantdoctor.models.ApiResponse
 import com.joao.plantdoctor.models.AtividadeHistorico
 import com.joao.plantdoctor.models.Culture
 import com.joao.plantdoctor.models.ForecastResponse
 import com.joao.plantdoctor.models.LoginRequest
 import com.joao.plantdoctor.models.LoginResponse
+import com.joao.plantdoctor.models.PlantedCulture
 import com.joao.plantdoctor.models.ResetPasswordRequest
 import com.joao.plantdoctor.models.SaveCulturesRequest
 import com.joao.plantdoctor.models.UserRequest
 import com.joao.plantdoctor.models.WeatherResponse
-// Imports do Retrofit
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,7 +19,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-// ▼▼▼ NOVOS MODELOS DE DADOS PARA POST (OS QUE ESTAVAM FALTANDO) ▼▼▼
+// Data classes para os corpos das requisições POST
 data class PlantedCultureRequest(
     val culture_id: Int,
     val planting_date: String, // Formato "YYYY-MM-DD"
@@ -32,13 +31,12 @@ data class HistoryEventRequest(
     val observation: String
 )
 
-
 /**
  * Interface que define todos os endpoints da API para o Retrofit.
  */
 interface ApiService {
 
-    // --- Endpoints de Autenticação (Já existentes) ---
+    // --- Endpoints de Autenticação ---
     @POST("/api/auth/register")
     suspend fun register(@Body userRequest: UserRequest): Response<ApiResponse>
 
@@ -52,7 +50,7 @@ interface ApiService {
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse>
 
 
-    // --- Endpoints de Culturas (Já existentes) ---
+    // --- Endpoints de Culturas ---
     @GET("/api/cultures")
     suspend fun getAllCultures(@Header("Authorization") token: String): Response<List<Culture>>
 
@@ -65,12 +63,15 @@ interface ApiService {
         @Body request: SaveCulturesRequest
     ): Response<ApiResponse>
 
-    // ▼▼▼ NOVOS ENDPOINTS PARA SALVAR DADOS ▼▼▼
+    // --- Endpoints de Plantio e Histórico ---
+    @GET("/api/planted-cultures")
+    suspend fun getPlantedCultures(@Header("Authorization") token: String): Response<List<PlantedCulture>>
+
     @POST("/api/planted-cultures")
     suspend fun addPlantedCulture(
         @Header("Authorization") token: String,
         @Body request: PlantedCultureRequest
-    ): Response<Unit> // Usamos Unit se a resposta for vazia
+    ): Response<PlantedCulture>
 
     @POST("/api/planted-cultures/{id}/history")
     suspend fun addHistoryEvent(
@@ -80,7 +81,7 @@ interface ApiService {
     ): Response<AtividadeHistorico>
 
 
-    // --- Endpoint de Tempo (Já existentes) ---
+    // --- Endpoint de Tempo ---
     @GET("v1/current.json")
     suspend fun getCurrentWeather(
         @Query("key") apiKey: String,

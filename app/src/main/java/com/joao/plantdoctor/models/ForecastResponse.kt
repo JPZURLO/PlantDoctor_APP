@@ -2,7 +2,7 @@ package com.joao.plantdoctor.models
 
 import com.google.gson.annotations.SerializedName
 
-// Estrutura principal da resposta da API de previsão
+// Estrutura principal da resposta da API de previsão (Inalterada)
 data class ForecastResponse(
     @SerializedName("forecast") val forecast: Forecast
 )
@@ -13,12 +13,35 @@ data class Forecast(
 
 data class ForecastDay(
     @SerializedName("date") val date: String,
-    @SerializedName("day") val day: Day
+    @SerializedName("day") val day: Day // Inalterado
 )
 
+// A classe Condition também precisa existir para o campo de ícone, mas não está mostrada.
+// Deve ser algo como:
+/*
+data class Condition(
+    @SerializedName("text") val text: String,
+    @SerializedName("icon") val icon: String
+)
+*/
+
+// ✅ CORRIGIDO: Esta classe agora inclui Umidade e Chance de Chuva Diária
 data class Day(
-    @SerializedName("maxtemp_c") val maxtemp_c: Double,
-    @SerializedName("mintemp_c") val mintemp_c: Double,
-    @SerializedName("condition") val condition: Condition,
-    @SerializedName("daily_chance_of_rain") val daily_chance_of_rain: Int // 👈 ADICIONE ESTA LINHA
+    // ✅ CORREÇÃO TEMPERATURA: Mapeamento de Snake_Case para CamelCase
+    @SerializedName("maxtemp_c")
+    val maxtempC: Double,
+
+    @SerializedName("mintemp_c")
+    val mintempC: Double,
+
+    // Condição
+    @SerializedName("condition")
+    val condition: Condition,
+
+    // Umidade e Chuva (Correções anteriores)
+    @SerializedName("avghumidity")
+    val avgHumidity: Double,
+
+    @SerializedName("daily_chance_of_rain")
+    val dailyChanceOfRain: Int
 )

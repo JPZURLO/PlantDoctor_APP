@@ -14,9 +14,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="23">
 
-        <!-- MainActivity continua a ser a tela de arranque (Splash) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,37 +23,36 @@
             </intent-filter>
         </activity>
 
-        <!-- ✅ NOVA HOME ACTIVITY DECLARADA AQUI -->
         <activity
-            android:name=".HomeActivity"
+            android:name=".activities.HomeActivity"
             android:exported="false" />
 
         <activity
-            android:name=".CultureSelectionActivity"
+            android:name=".activities.CultureSelectionActivity"
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="false" />
 
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".activities.OnboardingActivity"
             android:exported="false" />
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.RegisterActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ManageCulturesActivity"
+            android:name=".activities.ManageCulturesActivity"
             android:exported="false" />
 
         <activity
-            android:name=".RecoveryActivity"
+            android:name=".activities.RecoveryActivity"
             android:exported="false" />
 
         <activity
-            android:name=".CreateNewPasswordActivity"
+            android:name=".activities.CreateNewPasswordActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -67,10 +65,10 @@
         </activity>
 
         <activity
-            android:name=".CultureDetailsActivity"
+            android:name=".activities.CultureDetailsActivity"
             android:exported="false"
             android:label="Detalhes da Cultura"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity" />
 
     </application>
 
