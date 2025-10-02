@@ -70,6 +70,10 @@
             android:label="Detalhes da Cultura"
             android:parentActivityName=".activities.HomeActivity" />
 
+        <activity
+            android:name=".activities.PlantingCalendarActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

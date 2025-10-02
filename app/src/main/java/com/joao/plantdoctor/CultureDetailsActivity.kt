@@ -3,9 +3,11 @@ package com.joao.plantdoctor.activities
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -18,34 +20,47 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.navigation.NavigationView
 import com.joao.plantdoctor.CultureCycleRepository
 import com.joao.plantdoctor.R
-// Você precisará criar estas classes/arquivos:
-import com.joao.plantdoctor.models.OldPlantingsAdapter // NOVO: Adapter para os plantios antigos
+import com.joao.plantdoctor.models.OldPlantingsAdapter
 import com.joao.plantdoctor.models.HistoryAdapter
 import com.joao.plantdoctor.viewmodel.CultureDetailsViewModel
+import com.joao.plantdoctor.models.PlantedCulture
+import com.joao.plantdoctor.PlantingCalendar // ✅ NOVO: Importa a lógica do calendário
+import com.joao.plantdoctor.PlantingWindow // ✅ NOVO: Importa a classe de janela
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CultureDetailsActivity : AppCompatActivity() {
+// ** OBS: VOCÊ DEVE CRIAR ESTA CLASSE E DECLARÁ-LA NO MANIFEST **
+class CameraExamineActivity : AppCompatActivity() {
+    // Placeholder para a nova Activity
+}
+
+class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val viewModel: CultureDetailsViewModel by viewModels()
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var recyclerViewHistory: RecyclerView
 
-    // NOVO: Componentes para Plantios Antigos
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
+    private lateinit var cultureDataScrollView: androidx.core.widget.NestedScrollView
+
     private lateinit var tvOldPlantingsHeader: TextView
     private lateinit var recyclerViewOldPlantings: RecyclerView
     private lateinit var oldPlantingsAdapter: OldPlantingsAdapter
 
     private lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
     private lateinit var ivCultureImage: ImageView
-
     private lateinit var tvPlantingDate: TextView
     private lateinit var tvHarvestDate: TextView
     private lateinit var fabAddHistory: FloatingActionButton
@@ -63,36 +78,46 @@ class CultureDetailsActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar)
+        cultureDataScrollView = findViewById(R.id.culture_data_scroll_view)
+
+        // --- INICIALIZAÇÃO E CONFIGURAÇÃO DO MENU LATERAL ---
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener(this)
+        // --- FIM DA CONFIGURAÇÃO DO MENU LATERAL ---
+
 
         cultureId = intent.getIntExtra("CULTURE_ID", -1)
         cultureName = intent.getStringExtra("CULTURE_NAME")
         cultureImageUrl = intent.getStringExtra("CULTURE_IMAGE_URL")
 
+        // Inicializa componentes
         ivCultureImage = findViewById(R.id.iv_culture_detail_image)
         tvPlantingDate = findViewById(R.id.tv_planting_date)
         tvHarvestDate = findViewById(R.id.tv_harvest_date)
         fabAddHistory = findViewById(R.id.fab_add_history)
         btnNewPlantingCycle = findViewById(R.id.btn_new_planting_cycle)
+        tvOldPlantingsHeader = findViewById(R.id.tv_old_plantings_header)
+        recyclerViewOldPlantings = findViewById(R.id.recycler_view_old_plantings)
 
-        // NOVO: Inicializa componentes e RecyclerViews de Plantios Antigos
-        tvOldPlantingsHeader = findViewById(R.id.tv_old_plantings_header) // Crie este ID no XML
-        recyclerViewOldPlantings = findViewById(R.id.recycler_view_old_plantings) // Crie este ID no XML
 
         renderCultureDetails(cultureImageUrl)
+        setupDrawerHeader()
 
         setupRecyclerView()
-        setupOldPlantingsRecyclerView() // NOVO: Configuração do novo RecyclerView
+        setupOldPlantingsRecyclerView()
         setupObservers()
-
-        getToken()?.let {
-            if (cultureId != -1) {
-                // CHAMA A NOVA FUNÇÃO DE BUSCA COMPLETA
-                viewModel.fetchAllCulturePlantings(it, cultureId)
-            }
-        }
 
         tvPlantingDate.text = "Data de Plantio: (Toque para definir)"
         tvHarvestDate.text = "Colheita Prevista: (Aguardando data de plantio)"
@@ -111,17 +136,95 @@ class CultureDetailsActivity : AppCompatActivity() {
             Toast.makeText(this, "Inicie o novo ciclo, selecione a Data de Plantio.", Toast.LENGTH_LONG).show()
             showDatePickerDialog()
         }
+
+        drawerLayout.openDrawer(GravityCompat.START)
     }
 
-    // NOVO: Configura o RecyclerView para plantios antigos
+    // NOVO MÉTODO: Configura o cabeçalho do menu lateral com a imagem da cultura
+    private fun setupDrawerHeader() {
+        val headerView = navView.getHeaderView(0)
+
+        val headerImageView = headerView.findViewById<ImageView>(R.id.iv_nav_header_culture_image)
+        val headerTextView = headerView.findViewById<TextView>(R.id.tv_nav_header_culture_name)
+
+        headerTextView.text = cultureName ?: "Detalhes da Cultura"
+
+        cultureImageUrl?.let { url ->
+            headerImageView.load(url) {
+                crossfade(true)
+                placeholder(R.drawable.ic_leaf)
+                error(R.drawable.ic_leaf)
+            }
+        }
+    }
+
+
+    // MÉTODO OBRIGATÓRIO PARA O MENU LATERAL
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_examine_camera -> {
+                // ... (Lógica da Câmera/IA) ...
+                val intent = Intent(this, CameraExamineActivity::class.java).apply {
+                    putExtra("CULTURE_ID", cultureId)
+                }
+                startActivity(intent)
+            }
+
+            R.id.nav_culture_history -> { // Este item exibe o conteúdo na tela atual
+                getToken()?.let { token ->
+                    viewModel.fetchAllCulturePlantings(token, cultureId)
+                }
+                cultureDataScrollView.visibility = View.VISIBLE
+                cultureDataScrollView.post { cultureDataScrollView.scrollTo(0, 0) }
+                Toast.makeText(this, "Visualizando Histórico de Ciclos.", Toast.LENGTH_SHORT).show()
+            }
+
+            R.id.nav_culture_dates -> { // ✅ CORREÇÃO: Este item deve abrir a nova Activity
+                val intent = Intent(this, PlantingCalendarActivity::class.java).apply {
+                    // Passa o nome para destaque na tela de calendário
+                    putExtra("CULTURE_NAME_TO_SCROLL", cultureName)
+                }
+                startActivity(intent)
+                Toast.makeText(this, "Abrindo Calendário de Plantio.", Toast.LENGTH_SHORT).show()
+            }
+
+            R.id.nav_delete_planting -> {
+                Toast.makeText(this, "Funcionalidade de Exclusão.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
     private fun setupOldPlantingsRecyclerView() {
-        oldPlantingsAdapter = OldPlantingsAdapter()
+        oldPlantingsAdapter = OldPlantingsAdapter { oldPlantedCulture ->
+            showHistoricalData(oldPlantedCulture)
+        }
+
         recyclerViewOldPlantings.adapter = oldPlantingsAdapter
         recyclerViewOldPlantings.layoutManager = LinearLayoutManager(this)
         recyclerViewOldPlantings.isNestedScrollingEnabled = false
         tvOldPlantingsHeader.visibility = View.GONE
         recyclerViewOldPlantings.visibility = View.GONE
     }
+
+    private fun showHistoricalData(oldPlanting: PlantedCulture) {
+        if (oldPlanting.id == plantedCultureId) {
+            Toast.makeText(this, "Visualizando o ciclo ATIVO.", Toast.LENGTH_SHORT).show()
+            fabAddHistory.visibility = View.VISIBLE
+            return
+        }
+
+        Toast.makeText(this, "Visualizando histórico do plantio em ${oldPlanting.planting_date}.", Toast.LENGTH_LONG).show()
+
+        historyAdapter.submitList(oldPlanting.history_events)
+
+        fabAddHistory.visibility = View.GONE
+
+        cultureDataScrollView.post { cultureDataScrollView.scrollTo(0, 500) }
+    }
+
 
     private fun renderCultureDetails(imageUrl: String?) {
         collapsingToolbarLayout.title = cultureName ?: "Detalhes da Cultura"
@@ -149,10 +252,8 @@ class CultureDetailsActivity : AppCompatActivity() {
 
     private fun setupObservers() {
 
-        // NOVO OBSERVER: Gerencia a lista completa e a exibe
         viewModel.allPlantings.observe(this) { allPlantings ->
             if (allPlantings.size > 1) {
-                // Pega todos, exceto o primeiro (que é o plantio ativo / mais recente)
                 val oldPlantings = allPlantings.drop(1)
                 oldPlantingsAdapter.submitList(oldPlantings)
 
@@ -170,7 +271,6 @@ class CultureDetailsActivity : AppCompatActivity() {
         }
 
         viewModel.plantedCultureDetail.observe(this) { existingPlanting ->
-            // ESTA PARTE SÓ LIDA COM O PLANTIO ATIVO/MAIS RECENTE
             if (existingPlanting != null) {
                 Toast.makeText(this, "Carregando dados do plantio mais recente...", Toast.LENGTH_SHORT).show()
                 this.plantedCultureId = existingPlanting.id
@@ -187,9 +287,11 @@ class CultureDetailsActivity : AppCompatActivity() {
                 updatePlantingDateText()
                 calculateAndDisplayHarvestDate()
                 btnNewPlantingCycle.visibility = View.VISIBLE
+                fabAddHistory.visibility = View.VISIBLE
             } else {
                 Log.d("CultureDetailsActivity", "Nenhum plantio ativo encontrado.")
                 btnNewPlantingCycle.visibility = View.GONE
+                fabAddHistory.visibility = View.GONE
                 this.plantedCultureId = -1
                 this.plantingDate = null
                 updatePlantingDateText()
@@ -213,6 +315,7 @@ class CultureDetailsActivity : AppCompatActivity() {
                     viewModel.saveHistoryEvent(token, plantedCultureId, "OUTRO", descricaoColheita)
                 }
                 btnNewPlantingCycle.visibility = View.VISIBLE
+                fabAddHistory.visibility = View.VISIBLE
             }
             result.onFailure {
                 Toast.makeText(this, "Erro CRÍTICO ao registrar plantio: ${it.message}", Toast.LENGTH_LONG).show()
@@ -229,7 +332,6 @@ class CultureDetailsActivity : AppCompatActivity() {
     }
 
     private fun showAddHistoryDialog() {
-        // ... (Seu código para showAddHistoryDialog) ...
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_history, null)
         val spinnerEventType = dialogView.findViewById<Spinner>(R.id.spinner_event_type)
         val editTextObservation = dialogView.findViewById<EditText>(R.id.et_observation)
@@ -263,7 +365,8 @@ class CultureDetailsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun processarNovaDataDePlantio(dataSelecionada: Calendar) {
+    // ✅ NOVO: Função para salvar o plantio após a validação
+    private fun salvarPlantioConfirmado(dataSelecionada: Calendar, notes: String) {
         plantingDate = dataSelecionada
         updatePlantingDateText()
         calculateAndDisplayHarvestDate()
@@ -273,8 +376,79 @@ class CultureDetailsActivity : AppCompatActivity() {
         val token = getToken()
 
         if (token != null && cultureId != -1) {
-            viewModel.saveNewPlanting(token, cultureId, dataPlantioFormatada, "Plantio inicial.")
+            viewModel.saveNewPlanting(token, cultureId, dataPlantioFormatada, notes)
         }
+    }
+
+    // ✅ NOVO: Função para verificar se a data está na janela ideal
+    private fun isDateIdeal(cultureName: String?, date: Calendar): Boolean {
+        if (cultureName == null) return true
+
+        // ✅ Uso de PlantingCalendar.IDEAL_PLANTING_DATES
+        val windows = PlantingCalendar.IDEAL_PLANTING_DATES[cultureName] ?: return true
+        val selectedMonth = date.get(Calendar.MONTH)
+
+        return windows.any { window ->
+            val start = window.startMonth
+            val end = window.endMonth
+
+            // Trata janelas que cruzam o final do ano (ex: Outubro-Março)
+            if (start > end) {
+                selectedMonth >= start || selectedMonth <= end
+            } else {
+                selectedMonth >= start && selectedMonth <= end
+            }
+        }
+    }
+
+    // ✅ NOVO: Diálogo de Opção de Consulta de Data
+    private fun showConsultDateOptionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Consultar Datas")
+            .setMessage("Deseja consultar o calendário de plantio ideal para ${cultureName}?")
+            .setPositiveButton("Sim, Consultar") { dialog, _ ->
+                // ✅ CORREÇÃO: Abre a Activity do Calendário
+                val intent = Intent(this, PlantingCalendarActivity::class.java).apply {
+                    // Opcional: Passa o nome da cultura para que o calendário role até ela
+                    putExtra("CULTURE_NAME_TO_SCROLL", cultureName)
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton("Não") { dialog, _ ->
+                // Reabre o DatePickerDialog para nova tentativa
+                showDatePickerDialog()
+            }
+            .show()
+    }
+
+    // ✅ NOVO: Diálogo de Aviso de Data Fora do Período
+    private fun showPlantingWarningDialog(dataSelecionada: Calendar) {
+        AlertDialog.Builder(this)
+            .setTitle("Aviso: Janela de Plantio")
+            .setMessage("A data selecionada está fora do período ideal de plantio para ${cultureName}. Deseja continuar com esta data?")
+            .setPositiveButton("Sim, Continuar") { _, _ ->
+                salvarPlantioConfirmado(dataSelecionada, "Plantio fora da janela ideal.")
+            }
+            .setNegativeButton("Não, Mudar Data") { _, _ ->
+                showConsultDateOptionDialog()
+            }
+            .show()
+    }
+
+    // ✅ MODIFICADO: Função que agora chama a validação antes de salvar
+    private fun processarNovaDataDePlantio(dataSelecionada: Calendar) {
+        if (cultureName == null) return
+
+        val isIdeal = isDateIdeal(cultureName, dataSelecionada)
+
+        if (!isIdeal) {
+            // DATA FORA DA JANELA: Mostra o diálogo de confirmação
+            showPlantingWarningDialog(dataSelecionada)
+            return
+        }
+
+        // DATA IDEAL: Procede com o salvamento padrão
+        salvarPlantioConfirmado(dataSelecionada, "Plantio inicial.")
     }
 
     private fun showDatePickerDialog() {
@@ -285,7 +459,7 @@ class CultureDetailsActivity : AppCompatActivity() {
 
         val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
             val selectedCalendar = Calendar.getInstance().apply { set(selectedYear, selectedMonth, selectedDay) }
-            processarNovaDataDePlantio(selectedCalendar)
+            processarNovaDataDePlantio(selectedCalendar) // Chama a validação
         }, year, month, day)
 
         datePickerDialog.datePicker.maxDate = System.currentTimeMillis()

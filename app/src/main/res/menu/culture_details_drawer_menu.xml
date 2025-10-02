@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_culture_history"
+            android:icon="@drawable/ic_history"
+            android:title="Histórico de Ciclos" />
+        <item
+            android:id="@+id/nav_culture_dates"
+            android:icon="@drawable/ic_calendar_check"
+            android:title="Datas de Plantio" />
+    </group>
+    <item android:title="Ações">
+        <menu>
+            <item
+                android:id="@+id/nav_examine_camera"
+                android:icon="@drawable/ic_camera"
+                android:title="Examinar Planta (Câmera/IA)" />
+            <item
+                android:id="@+id/nav_delete_planting"
+                android:icon="@drawable/ic_delete"
+                android:title="Excluir Plantio Atual" />
+        </menu>
+    </item>
+</menu>

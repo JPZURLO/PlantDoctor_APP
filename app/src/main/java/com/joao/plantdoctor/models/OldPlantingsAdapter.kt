@@ -1,4 +1,4 @@
-package com.joao.plantdoctor.models // Pacote de modelos ou adaptadores
+package com.joao.plantdoctor.models
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +11,18 @@ import com.joao.plantdoctor.R
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Lembre-se de importar PlantedCulture para que o ListAdapter funcione.
+// import com.joao.plantdoctor.models.PlantedCulture
+// (Assumindo que PlantedCulture está em com.joao.plantdoctor.models)
+
 // ----------------------------------------------------------------------------------
-// 1. CLASSE ADAPTER PRINCIPAL
+// 1. CLASSE ADAPTER PRINCIPAL (Corrigida)
 // ----------------------------------------------------------------------------------
 
-// Assume que PlantedCulture é o modelo que contém o nome da cultura e a data de plantio
-class OldPlantingsAdapter : ListAdapter<PlantedCulture, OldPlantingsAdapter.ViewHolder>(PlantedCultureDiffCallback()) {
+class OldPlantingsAdapter(
+    // ✅ CORREÇÃO: Adiciona a função de clique ao construtor
+    private val onItemClick: (PlantedCulture) -> Unit
+) : ListAdapter<PlantedCulture, OldPlantingsAdapter.ViewHolder>(PlantedCultureDiffCallback()) {
 
     // Formato de data da API (ISO 8601: "yyyy-MM-dd")
     private val apiSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -36,6 +42,7 @@ class OldPlantingsAdapter : ListAdapter<PlantedCulture, OldPlantingsAdapter.View
         fun bind(plantedCulture: PlantedCulture) {
 
             // 1. Nome e ID
+            // Nota: Se 'culture' não for resolvido, verifique o modelo PlantedCulture
             nameTextView.text = plantedCulture.culture.name
 
             // 2. Data
@@ -59,22 +66,26 @@ class OldPlantingsAdapter : ListAdapter<PlantedCulture, OldPlantingsAdapter.View
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.bind(item)
+
+        // ✅ CORREÇÃO: Adiciona o listener de clique que executa a função da Activity
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 }
 
 // ----------------------------------------------------------------------------------
-// 2. CLASSE DE CALLBACK (Para o ListAdapter)
+// 2. CLASSE DE CALLBACK (Inalterada)
 // ----------------------------------------------------------------------------------
 
-// Classe auxiliar para otimizar o ListAdapter
 class PlantedCultureDiffCallback : DiffUtil.ItemCallback<PlantedCulture>() {
     override fun areItemsTheSame(oldItem: PlantedCulture, newItem: PlantedCulture): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: PlantedCulture, newItem: PlantedCulture): Boolean {
-        // Uma simples verificação de igualdade de dados
         return oldItem == newItem
     }
 }

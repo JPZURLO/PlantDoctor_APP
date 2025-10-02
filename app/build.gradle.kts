@@ -79,5 +79,7 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+// Ou a versão mais recente
 }
 
