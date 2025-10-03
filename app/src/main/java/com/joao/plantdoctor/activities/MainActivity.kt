@@ -3,6 +3,7 @@ package com.joao.plantdoctor.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.joao.plantdoctor.R
 import kotlinx.coroutines.delay
@@ -32,5 +33,13 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    fun navigateTo(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 }
 

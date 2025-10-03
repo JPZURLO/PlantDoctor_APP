@@ -1,6 +1,7 @@
 package com.joao.plantdoctor.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +14,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.joao.plantdoctor.R
 import com.joao.plantdoctor.adapter.CultureHomeAdapter
 import com.joao.plantdoctor.viewmodel.CultureViewModel
+import com.joao.plantdoctor.activities.MainActivity
+import com.joao.plantdoctor.activities.HomeActivity
 
 class HomeFragment : Fragment() {
+
 
     private val viewModel: CultureViewModel by viewModels()
     private lateinit var adapter: CultureHomeAdapter
@@ -37,6 +41,36 @@ class HomeFragment : Fragment() {
         setupPullToRefresh()
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val cardDoubts = view.findViewById<View>(R.id.card_doubts)
+        val cardSuggestions = view.findViewById<View>(R.id.card_suggestions)
+        val cardRanking = view.findViewById<View>(R.id.card_ranking)
+        val cardWeather = view.findViewById<View>(R.id.card_weather)
+        val cardMyCultures = view.findViewById<View>(R.id.card_my_cultures)
+
+        cardDoubts.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(DoubtsFragment())
+        }
+
+        cardSuggestions.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(SuggestionsFragment())
+        }
+
+        cardRanking.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(RankingFragment())
+        }
+
+        cardWeather.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(WeatherFragment())
+        }
+
+        cardMyCultures.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(MyCulturesFragment())
+        }
     }
 
     override fun onResume() {

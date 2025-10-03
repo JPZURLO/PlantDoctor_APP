@@ -68,11 +68,15 @@
             android:name=".activities.CultureDetailsActivity"
             android:exported="false"
             android:label="Detalhes da Cultura"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+
+            android:theme="@style/Theme.PlantDoctor.NoActionBar" />
 
         <activity
             android:name=".activities.PlantingCalendarActivity"
             android:exported="false" />
+
+
 
     </application>
 

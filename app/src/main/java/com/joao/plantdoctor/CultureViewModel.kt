@@ -2,6 +2,7 @@ package com.joao.plantdoctor.viewmodel // ✅ GARANTA QUE O PACOTE ESTÁ CORRETO
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -54,20 +55,40 @@ class CultureViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun fetchUserCultures() {
+        // Log 1: A função foi chamada?
+        Log.d("CultureViewModel_Debug", "Iniciando fetchUserCultures...")
+
         viewModelScope.launch {
             val token = getToken()
+
+            // Log 2: O token foi encontrado?
+            Log.d("CultureViewModel_Debug", "Token encontrado: $token")
+
             if (token == null) {
+                Log.e("CultureViewModel_Debug", "TOKEN É NULO! Abortando a busca.")
                 _userCultures.postValue(Result.failure(Exception("Utilizador não autenticado.")))
                 return@launch
             }
             try {
+                // Log 3: Estamos prestes a fazer a chamada de rede?
+                Log.d("CultureViewModel_Debug", "Tentando chamar a API getMyCultures...")
+
                 val response = apiService.getMyCultures("Bearer $token")
+
                 if (response.isSuccessful && response.body() != null) {
+                    // Log 4: A chamada foi bem-sucedida?
+                    val cultureCount = response.body()!!.size
+                    Log.d("CultureViewModel_Debug", "API retornou sucesso com $cultureCount culturas.")
                     _userCultures.postValue(Result.success(response.body()!!))
                 } else {
+                    // Log 5: A chamada falhou (erro de servidor)?
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("CultureViewModel_Debug", "API retornou erro. Código: ${response.code()}, Mensagem: $errorBody")
                     _userCultures.postValue(Result.failure(Exception("Erro ao buscar as suas culturas: ${response.code()}")))
                 }
             } catch (e: Exception) {
+                // Log 6: Houve uma exceção de rede/outra?
+                Log.e("CultureViewModel_Debug", "Ocorreu uma exceção na chamada à API", e)
                 _userCultures.postValue(Result.failure(e))
             }
         }

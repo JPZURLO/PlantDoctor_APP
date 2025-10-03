@@ -75,9 +75,16 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-
+    fun navigateTo(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment) // Use o ID do container correto
+            .addToBackStack(null)
+            .commit()
+    }
     private fun switchFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().hide(activeFragment).show(fragment).commit()
         activeFragment = fragment
     }
+
+
 }
