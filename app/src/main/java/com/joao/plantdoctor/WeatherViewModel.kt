@@ -7,12 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.joao.plantdoctor.models.ForecastDay
 import com.joao.plantdoctor.models.WeatherResponse
 import com.joao.plantdoctor.network.RetrofitClient
+import com.joao.plantdoctor.network.WeatherApiService // Garanta que este import está correto
 import kotlinx.coroutines.launch
 
 class WeatherViewModel : ViewModel() {
 
     private val apiKey = "b61fcaf6ce154efd962104910253009"
-    private val apiService = RetrofitClient.weatherApiService
+    // ▼▼▼ A CORREÇÃO ESTÁ NESTA LINHA ▼▼▼
+    private val apiService: WeatherApiService = RetrofitClient.weatherApiService
+
 
     private val _weatherData = MutableLiveData<Result<WeatherResponse>>()
     val weatherData: LiveData<Result<WeatherResponse>> get() = _weatherData
@@ -25,10 +28,10 @@ class WeatherViewModel : ViewModel() {
         fetchForecastWeather(location)
     }
 
-    // ✅ Esta função chama 'getCurrentWeather'
     private fun fetchCurrentWeather(location: String) {
         viewModelScope.launch {
             try {
+                // Agora esta chamada vai funcionar, pois getCurrentWeather existe em WeatherApiService
                 val response = apiService.getCurrentWeather(apiKey, location)
                 if (response.isSuccessful && response.body() != null) {
                     _weatherData.postValue(Result.success(response.body()!!))
@@ -41,10 +44,10 @@ class WeatherViewModel : ViewModel() {
         }
     }
 
-    // ✅ Esta função acessa 'response.body()!!.forecast'
     private fun fetchForecastWeather(location: String) {
         viewModelScope.launch {
             try {
+                // Agora esta chamada vai funcionar, pois getForecastWeather existe em WeatherApiService
                 val response = apiService.getForecastWeather(apiKey, location, 3)
                 if (response.isSuccessful && response.body() != null) {
                     _forecastData.postValue(Result.success(response.body()!!.forecast.forecastday))

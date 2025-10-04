@@ -60,26 +60,28 @@ class LoginActivity : AppCompatActivity() {
     private fun setupObservers() {
         authViewModel.loginResult.observe(this) { result ->
             result.onSuccess { loginResponse ->
-
-                // ==========================================================
-                // ▼▼▼ ADICIONE ESTA LINHA PARA IMPRIMIR O TOKEN ▼▼▼
-                // ==========================================================
                 Log.d("TOKEN_DEBUG", "Token Recebido: ${loginResponse.token}")
-                // ==========================================================
-
-                // Login bem-sucedido.
                 Toast.makeText(this, loginResponse.message, Toast.LENGTH_SHORT).show()
 
-                // O resto do seu código para guardar o token e navegar...
+                // Passo 1: Salva TODAS as informações importantes do usuário
                 val sharedPrefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
                 with(sharedPrefs.edit()) {
                     putString("AUTH_TOKEN", loginResponse.token)
+                    putString("USER_ROLE", loginResponse.userRole) // Salva o tipo de usuário (ADMIN/COMMON)
                     apply()
                 }
 
-                val intent = Intent(this, OnboardingActivity::class.java)
+                // Passo 2: Navegação Inteligente baseada na resposta da API
+                val intent: Intent = if (loginResponse.hasCultures == true) {
+                    // Usuário antigo: vai para a tela principal
+                    Intent(this, HomeActivity::class.java)
+                } else {
+                    // Usuário novo: vai para a tela de seleção de culturas
+                    Intent(this, CultureSelectionActivity::class.java)
+                }
+
                 startActivity(intent)
-                finish()
+                finish() // Fecha a tela de login para que o usuário não possa voltar para ela
             }
             result.onFailure { error ->
                 Toast.makeText(this, "Erro: ${error.message}", Toast.LENGTH_LONG).show()

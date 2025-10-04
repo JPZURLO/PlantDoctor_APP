@@ -1,57 +1,49 @@
 package com.joao.plantdoctor.fragments
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.joao.plantdoctor.R
-import com.joao.plantdoctor.adapter.CultureHomeAdapter
-import com.joao.plantdoctor.viewmodel.CultureViewModel
-import com.joao.plantdoctor.activities.MainActivity
-import com.joao.plantdoctor.activities.HomeActivity
+import com.joao.plantdoctor.activities.HomeActivity // Lembre-se de usar o nome correto da sua Activity!
 
 class HomeFragment : Fragment() {
-
-
-    private val viewModel: CultureViewModel by viewModels()
-    private lateinit var adapter: CultureHomeAdapter
-
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
-
-        // Inicializa o SwipeRefreshLayout e o RecyclerView
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_home)
-
-        // ✅ CORREÇÃO: Chama os métodos que agora estarão presentes
-        setupRecyclerView(recyclerView)
-        setupObservers()
-        setupPullToRefresh()
-
-        return view
+        // Apenas infla o layout do menu
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Encontra os cards pelo ID
         val cardDoubts = view.findViewById<View>(R.id.card_doubts)
         val cardSuggestions = view.findViewById<View>(R.id.card_suggestions)
         val cardRanking = view.findViewById<View>(R.id.card_ranking)
-        val cardWeather = view.findViewById<View>(R.id.card_weather)
         val cardMyCultures = view.findViewById<View>(R.id.card_my_cultures)
+        // O card_weather também está no seu XML, vamos adicionar o clique para ele também
+        val cardWeather = view.findViewById<View>(R.id.card_weather)
+        val cardManageUsers = view.findViewById<View>(R.id.card_manage_users)
 
+        // --- NOVO: Lógica para exibir o card de admin ---
+        val sharedPrefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        val userRole = sharedPrefs.getString("USER_ROLE", "COMMON")
+
+        if (userRole == "ADMIN") {
+            cardManageUsers.visibility = View.VISIBLE
+        } else {
+            cardManageUsers.visibility = View.GONE
+        }
+
+
+        // Configura os cliques para cada card
         cardDoubts.setOnClickListener {
             (activity as? HomeActivity)?.navigateTo(DoubtsFragment())
         }
@@ -64,54 +56,23 @@ class HomeFragment : Fragment() {
             (activity as? HomeActivity)?.navigateTo(RankingFragment())
         }
 
-        cardWeather.setOnClickListener {
-            (activity as? HomeActivity)?.navigateTo(WeatherFragment())
-        }
-
         cardMyCultures.setOnClickListener {
             (activity as? HomeActivity)?.navigateTo(MyCulturesFragment())
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        // Garante a atualização na volta para a tela
-        viewModel.fetchUserCultures()
-    }
-
-    // ----------------------------------------------------
-    // ✅ MÉTODO FALTANTE (SOLUÇÃO DO SEU ERRO)
-    // ----------------------------------------------------
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        adapter = CultureHomeAdapter(emptyList())
-        recyclerView.adapter = adapter
-        // Para a lista horizontal
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    }
-    // ----------------------------------------------------
-
-    private fun setupPullToRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
-            // Inicia a busca de dados
-            viewModel.fetchUserCultures()
+        cardWeather.setOnClickListener {
+            // Supondo que você tenha um WeatherFragment
+            (activity as? HomeActivity)?.navigateTo(WeatherFragment())
         }
-    }
 
-    private fun setupObservers() {
-        viewModel.userCultures.observe(viewLifecycleOwner) { result ->
-            // Para o indicador de loading do Pull-to-Refresh após a busca
-            swipeRefreshLayout.isRefreshing = false
+        // NOVO: Clique do card de admin
+        cardManageUsers.setOnClickListener {
+            // TODO: Navegar para a tela ManageUsersFragment (que vamos criar)
+            Toast.makeText(context, "Abrindo tela de gerenciamento de usuários...", Toast.LENGTH_SHORT).show()
+        }
 
-            result.onSuccess { cultures ->
-                if (cultures.isEmpty()) {
-                    adapter.updateCultures(emptyList())
-                } else {
-                    adapter.updateCultures(cultures)
-                }
-            }
-            result.onFailure { error ->
-                Toast.makeText(context, "Erro ao buscar suas culturas: ${error.message}", Toast.LENGTH_LONG).show()
-            }
+        cardManageUsers.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(ManageUsersFragment())
         }
     }
 }

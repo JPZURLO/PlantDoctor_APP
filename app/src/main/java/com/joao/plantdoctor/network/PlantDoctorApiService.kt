@@ -1,40 +1,50 @@
 package com.joao.plantdoctor.network
 
-import com.joao.plantdoctor.models.ApiResponse
-import com.joao.plantdoctor.models.AtividadeHistorico
-import com.joao.plantdoctor.models.Culture
-import com.joao.plantdoctor.models.ForecastResponse
-import com.joao.plantdoctor.models.LoginRequest
-import com.joao.plantdoctor.models.LoginResponse
-import com.joao.plantdoctor.models.PlantedCulture
-import com.joao.plantdoctor.models.ResetPasswordRequest
-import com.joao.plantdoctor.models.SaveCulturesRequest
-import com.joao.plantdoctor.models.UserRequest
-import com.joao.plantdoctor.models.WeatherResponse
+import com.google.gson.annotations.SerializedName
+import com.joao.plantdoctor.models.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
-// Data classes para os corpos das requisições POST
+// Data class para enviar uma nova dúvida
+data class DoubtRequest(
+    @SerializedName("question_text")
+    val questionText: String,
+    @SerializedName("is_anonymous")
+    val isAnonymous: Boolean = false
+)
+
+// Data class para enviar um novo plantio
 data class PlantedCultureRequest(
     val culture_id: Int,
     val planting_date: String, // Formato "YYYY-MM-DD"
     val notes: String? = null
 )
 
+// Data class para enviar um novo evento de histórico
 data class HistoryEventRequest(
     val event_type: String, // "ADUBAGEM", "COLHEITA", etc.
     val observation: String
 )
 
+
+data class SuggestionRequest(
+    @SerializedName("suggestion_text")
+    val suggestionText: String,
+    @SerializedName("is_anonymous")
+    val isAnonymous: Boolean = false
+)
+
+data class CultureRankingItem(
+    val name: String,
+    val count: Int
+)
+
+
+
 /**
- * Interface que define todos os endpoints da API para o Retrofit.
+ * Interface que define todos os endpoints da API PLANT DOCTOR.
  */
-interface ApiService {
+interface PlantDoctorApiService {
 
     // --- Endpoints de Autenticação ---
     @POST("/api/auth/register")
@@ -80,23 +90,29 @@ interface ApiService {
         @Body request: HistoryEventRequest
     ): Response<AtividadeHistorico>
 
+    // --- Endpoints de Dúvidas ---
+    @GET("api/doubts")
+    suspend fun getDoubts(@Header("Authorization") token: String): Response<List<Doubt>>
 
-    // --- Endpoint de Tempo ---
-    @GET("v1/current.json")
-    suspend fun getCurrentWeather(
-        @Query("key") apiKey: String,
-        @Query("q") location: String,
-        @Query("aqi") aqi: String = "no",
-        @Query("lang") lang: String = "pt"
-    ): Response<WeatherResponse>
+    @POST("api/doubts")
+    suspend fun postDoubt(
+        @Header("Authorization") token: String,
+        @Body doubtRequest: DoubtRequest
+    ): Response<Doubt>
 
-    @GET("v1/forecast.json")
-    suspend fun getForecastWeather(
-        @Query("key") apiKey: String,
-        @Query("q") location: String,
-        @Query("days") days: Int,
-        @Query("aqi") aqi: String = "no",
-        @Query("alerts") alerts: String = "no",
-        @Query("lang") lang: String = "pt"
-    ): Response<ForecastResponse>
+    // --- Endpoints de Sugestões ---
+    @GET("api/suggestions")
+    suspend fun getSuggestions(@Header("Authorization") token: String): Response<List<Suggestion>>
+
+    @POST("api/suggestions")
+    suspend fun postSuggestion(
+        @Header("Authorization") token: String,
+        @Body suggestionRequest: SuggestionRequest
+    ): Response<Suggestion>
+
+    @GET("api/cultures/ranking")
+    suspend fun getCultureRanking(@Header("Authorization") token: String): Response<List<CultureRankingItem>>
+
+    @GET("api/admin/users")
+    suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<User>>
 }

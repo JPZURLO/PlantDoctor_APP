@@ -10,12 +10,14 @@ import androidx.lifecycle.viewModelScope
 import com.joao.plantdoctor.models.ApiResponse
 import com.joao.plantdoctor.models.Culture
 import com.joao.plantdoctor.models.SaveCulturesRequest
+import com.joao.plantdoctor.network.PlantDoctorApiService
 import com.joao.plantdoctor.network.RetrofitClient
 import kotlinx.coroutines.launch
 
 class CultureViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val apiService = RetrofitClient.plantDoctorApiService
+    private val apiService: PlantDoctorApiService = RetrofitClient.plantDoctorApiService
+
     private val sharedPrefs = application.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
     // LiveData para a lista de todas as culturas disponíveis

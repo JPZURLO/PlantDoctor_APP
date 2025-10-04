@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".fragments.RankingFragment">
+    tools:context=".fragments.ManageUsersFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Culturas Mais Utilizadas"
-        android:textColor="@android:color/white"
+        android:padding="16dp"
+        android:text="Gerenciar Usuários"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pie_chart"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_user" />
 
 </LinearLayout>
