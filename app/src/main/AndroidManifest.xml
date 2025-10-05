@@ -7,7 +7,6 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/plantdoctor"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/plantdoctor_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Plantdoctor"
@@ -74,6 +73,10 @@
 
         <activity
             android:name=".activities.PlantingCalendarActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.EditUserActivity"
             android:exported="false" />
 
 

@@ -1,5 +1,6 @@
 package com.joao.plantdoctor.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +8,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joao.plantdoctor.R
+import com.joao.plantdoctor.activities.EditUserActivity
 import com.joao.plantdoctor.adapter.UserAdapter
 import com.joao.plantdoctor.viewmodel.ManageUsersViewModel
 
@@ -32,23 +36,33 @@ class ManageUsersFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // Pede para o ViewModel buscar os usuários sempre que a tela fica visível
         viewModel.fetchAllUsers()
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
+        // Inicializa o adapter com uma lista vazia e a ação de clique
         adapter = UserAdapter(emptyList()) { user ->
-            // TODO: Navegar para a tela de edição de usuário, passando o user.id
-            Toast.makeText(context, "Clicou em: ${user.name}", Toast.LENGTH_SHORT).show()
+            // AÇÃO DE CLIQUE: Abrir a EditUserActivity, passando o objeto User
+            val intent = Intent(requireContext(), EditUserActivity::class.java).apply {
+                putExtra("USER_EXTRA", user) // "USER_EXTRA" é a chave para buscar o dado na outra tela
+            }
+            startActivity(intent)
         }
+
         recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        // Adiciona uma linha divisória entre os itens da lista
+        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 
     private fun setupObservers() {
         viewModel.usersList.observe(viewLifecycleOwner) { result ->
             result.onSuccess { users ->
+                // Quando a lista de usuários chega da API, atualiza o adapter
                 adapter.updateUsers(users)
             }.onFailure { error ->
-                Toast.makeText(context, "Erro: ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Erro ao carregar usuários: ${error.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

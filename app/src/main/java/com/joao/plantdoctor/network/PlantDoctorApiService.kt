@@ -39,7 +39,13 @@ data class CultureRankingItem(
     val count: Int
 )
 
-
+data class UserUpdateRequest(
+    val name: String?,
+    val email: String?,
+    val password: String?,
+    @SerializedName("user_type")
+    val userType: String?
+)
 
 /**
  * Interface que define todos os endpoints da API PLANT DOCTOR.
@@ -115,4 +121,17 @@ interface PlantDoctorApiService {
 
     @GET("api/admin/users")
     suspend fun getAllUsers(@Header("Authorization") token: String): Response<List<User>>
+
+    @PUT("api/admin/users/{id}")
+    suspend fun updateUser(
+        @Header("Authorization") token: String,
+        @Path("id") userId: Int,
+        @Body request: UserUpdateRequest
+    ): Response<User>
+
+    @GET("api/admin/users/{id}/history")
+    suspend fun getUserHistory(
+        @Header("Authorization") token: String,
+        @Path("id") userId: Int
+    ): Response<List<UserHistoryItem>>
 }

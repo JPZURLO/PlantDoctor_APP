@@ -7,4 +7,5 @@
     <color name="colorAccentFaint">#FFEDED</color>
     <color name="card_background_transparent">#80000000</color>
     <color name="background_light_green">#E8F5E9</color>
+    <color name="admin_background_dark">#212121</color>
 </resources>

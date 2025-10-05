@@ -11,6 +11,7 @@
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         tools:text="Nome do Usuário" />
@@ -19,12 +20,14 @@
         android:id="@+id/tv_user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="email@exemplo.com" />
+        tools:text="email@exemplo.com"
+        android:textColor="#CCCCCC" />
 
     <TextView
         android:id="@+id/tv_user_role"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="italic"
-        tools:text="ADMIN" />
+        tools:text="ADMIN"
+        android:textColor="#A0A0A0"/>
 </LinearLayout>

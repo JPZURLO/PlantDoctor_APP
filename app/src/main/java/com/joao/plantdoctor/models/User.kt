@@ -1,7 +1,10 @@
 package com.joao.plantdoctor.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize // <-- ADICIONE AQUI
 data class User(
     @SerializedName("id")
     val id: Int,
@@ -13,5 +16,5 @@ data class User(
     val email: String,
 
     @SerializedName("user_type")
-    val userType: String // "COMMON" ou "ADMIN"
-)
+    val userType: String
+) : Parcelable // <-- E AQUI

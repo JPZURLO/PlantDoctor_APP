@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragments.ManageUsersFragment">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Gerenciar Usuários"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+    tools:context=".fragments.ManageUsersFragment"
+    android:background="@color/admin_background_dark"> <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:text="Gerenciar Usuários"
+    android:textColor="@android:color/white"
+    android:textSize="24sp"
+    android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_users"

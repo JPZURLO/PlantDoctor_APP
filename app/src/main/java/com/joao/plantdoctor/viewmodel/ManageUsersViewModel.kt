@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.joao.plantdoctor.models.User
 import com.joao.plantdoctor.network.PlantDoctorApiService
 import com.joao.plantdoctor.network.RetrofitClient
+import com.joao.plantdoctor.network.UserUpdateRequest
 import kotlinx.coroutines.launch
 
 class ManageUsersViewModel(application: Application) : AndroidViewModel(application) {
@@ -37,6 +38,30 @@ class ManageUsersViewModel(application: Application) : AndroidViewModel(applicat
                 }
             } catch (e: Exception) {
                 _usersList.postValue(Result.failure(e))
+            }
+        }
+    }
+
+    fun updateUser(userId: Int, name: String, email: String, password: String?, role: String) {
+        viewModelScope.launch {
+            val token = getToken()
+            if (token == null) {
+                // TODO: Lidar com erro de token
+                return@launch
+            }
+            try {
+                val request = UserUpdateRequest(name, email, password, role)
+                val response = apiService.updateUser(token, userId, request)
+                if (response.isSuccessful) {
+                    // Sucesso! A lista será atualizada na próxima vez que a tela for aberta
+                    // ou podemos forçar a atualização aqui.
+                    fetchAllUsers()
+                    // TODO: Postar um resultado de sucesso para a UI
+                } else {
+                    // TODO: Postar um resultado de falha para a UI
+                }
+            } catch (e: Exception) {
+                // TODO: Lidar com exceção
             }
         }
     }
