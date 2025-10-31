@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/iv_diagnosis_thumbnail"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="Foto do diagnóstico"
+            tools:src="@drawable/ic_leaf2" /> <TextView
+        android:id="@+id/tv_diagnosis_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/iv_diagnosis_thumbnail"
+        app:layout_constraintStart_toEndOf="@id/iv_diagnosis_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Míldio da Soja" />
+
+        <TextView
+            android:id="@+id/tv_diagnosis_culture_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/tv_diagnosis_name"
+            app:layout_constraintStart_toStartOf="@id/tv_diagnosis_name"
+            app:layout_constraintEnd_toEndOf="@id/tv_diagnosis_name"
+            tools:text="Cultura: Soja" />
+
+        <TextView
+            android:id="@+id/tv_diagnosis_datetime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@id/tv_diagnosis_culture_name"
+            app:layout_constraintStart_toStartOf="@id/tv_diagnosis_name"
+            app:layout_constraintEnd_toEndOf="@id/tv_diagnosis_name"
+            tools:text="31/10/2025 - 12:40" />
+
+        <TextView
+            android:id="@+id/tv_diagnosis_observations"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textStyle="italic"
+            app:layout_constraintTop_toBottomOf="@id/tv_diagnosis_datetime"
+            app:layout_constraintStart_toStartOf="@id/tv_diagnosis_name"
+            app:layout_constraintEnd_toEndOf="@id/tv_diagnosis_name"
+            tools:text="Observação: O diagnóstico indica alta severidade. Aplicar fungicida recomendado e monitorar a área." />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

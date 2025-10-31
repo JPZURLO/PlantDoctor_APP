@@ -22,8 +22,9 @@
         android:title="Notícias" />
 
     <item
-        android:id="@+id/nav_weather"
-        android:icon="@drawable/ic_weather"
-        android:title="Tempo" />
+        android:id="@+id/nav_culture_diagnosis_history"
+        android:icon="@drawable/ic_history"
+        android:title="Histórico de Diagnósticos" />
+
 
 </menu>

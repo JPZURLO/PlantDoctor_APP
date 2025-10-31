@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    namespace = "com.joao.plantdoctor"
+    namespace = "com.joao.PlantSoS"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.joao.plantdoctor"
-        minSdk = 21
+        applicationId = "com.joao.plantsos"
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -82,5 +82,13 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    //construcao da IA
+    implementation("org.tensorflow:tensorflow-lite:2.15.0")
+    // Core TFLite runtime
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+
+    implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.3")
+    // Ajuda a carregar o modelo e processar resultados
 
 }

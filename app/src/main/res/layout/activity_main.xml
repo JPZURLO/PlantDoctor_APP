@@ -13,7 +13,7 @@
         android:layout_width="327dp"
         android:layout_height="253dp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/logo_placeholder"
+        android:src="@drawable/plantsos"
         app:layout_constraintBottom_toTopOf="@+id/tv_app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

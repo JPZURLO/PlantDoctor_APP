@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Plantdoctor</string>
+    <string name="app_name">PlantSoS</string>
     <string name="navigation_drawer_open">Abrir menu de navegação lateral</string>
     <string name="navigation_drawer_close">Fechar menu de navegação lateral</string>
 </resources>
