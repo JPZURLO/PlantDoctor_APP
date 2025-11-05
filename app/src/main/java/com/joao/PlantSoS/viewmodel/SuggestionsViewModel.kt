@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
 import com.joao.PlantSoS.models.Suggestion
+import com.joao.PlantSoS.models.SuggestionRequest
 import com.joao.PlantSoS.network.*
 import kotlinx.coroutines.launch
 

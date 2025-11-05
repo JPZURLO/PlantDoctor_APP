@@ -2,10 +2,13 @@ package com.joao.PlantSoS.repository
 
 import android.util.Log
 import com.joao.PlantSoS.models.AtividadeHistorico
+import com.joao.PlantSoS.models.DiagnosisHistoryItem
+import com.joao.PlantSoS.models.DiseaseExplanationResponse
 import com.joao.PlantSoS.models.PlantedCulture
-import com.joao.PlantSoS.network.HistoryEventRequest
-import com.joao.PlantSoS.network.PlantedCultureRequest
+import com.joao.PlantSoS.models.HistoryEventRequest
+import com.joao.PlantSoS.models.PlantedCultureRequest
 import com.joao.PlantSoS.network.RetrofitClient
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,6 +88,17 @@ class CulturesRepository {
             ?.find { it.id == plantedCultureId }
             ?.history_events
     }
+
+    suspend fun getDiagnosisHistory(token: String, cultureId: Int): Response<List<DiagnosisHistoryItem>> {
+        // Agora sim, estamos passando o cultureId para a API
+        return apiService.getDiagnosisHistory("Bearer $token", cultureId)
+    }
+
+    suspend fun getDiseaseExplanation(diseaseName: String): Response<DiseaseExplanationResponse> {
+        // Não precisa de token, como no seu app.py
+        return apiService.getDiseaseExplanation(diseaseName)
+    }
+
 
     // FUNÇÃO ANTIGA REMOVIDA: getMostRecentPlantedCulture não é mais necessária, pois é feita na função acima.
 }

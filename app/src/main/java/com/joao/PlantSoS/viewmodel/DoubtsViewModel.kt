@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.joao.PlantSoS.models.Doubt
-import com.joao.PlantSoS.network.DoubtRequest
+import com.joao.PlantSoS.models.DoubtRequest
 import com.joao.PlantSoS.network.PlantDoctorApiService
 import com.joao.PlantSoS.network.RetrofitClient
 import kotlinx.coroutines.launch

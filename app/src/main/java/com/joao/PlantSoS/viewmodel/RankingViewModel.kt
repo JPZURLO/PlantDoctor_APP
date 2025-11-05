@@ -1,37 +1,35 @@
 package com.joao.PlantSoS.viewmodel
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.*
-import com.joao.PlantSoS.network.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.joao.PlantSoS.models.CultureRankingItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class RankingViewModel(application: Application) : AndroidViewModel(application) {
-    private val apiService: PlantDoctorApiService = RetrofitClient.plantDoctorApiService
-    private val sharedPrefs = application.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+class RankingViewModel : ViewModel() {
 
+    // LiveData com resultado de ranking
     private val _rankingData = MutableLiveData<Result<List<CultureRankingItem>>>()
-    val rankingData: LiveData<Result<List<CultureRankingItem>>> get() = _rankingData
+    val rankingData: LiveData<Result<List<CultureRankingItem>>> = _rankingData
 
-    private fun getToken(): String? {
-        val token = sharedPrefs.getString("AUTH_TOKEN", null)
-        return if (token != null) "Bearer $token" else null
-    }
-
+    // Função que "busca" os dados (simulação)
     fun fetchRanking() {
-        viewModelScope.launch {
-            val token = getToken()
-            if (token == null) {
-                _rankingData.postValue(Result.failure(Exception("Usuário não autenticado.")))
-                return@launch
-            }
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = apiService.getCultureRanking(token)
-                if (response.isSuccessful && response.body() != null) {
-                    _rankingData.postValue(Result.success(response.body()!!))
-                } else {
-                    _rankingData.postValue(Result.failure(Exception("Erro ao buscar ranking.")))
-                }
+                // Simula delay de API
+                delay(1000)
+
+                // Simula dados de ranking
+                val rankingList = listOf(
+                    CultureRankingItem("Milho", 45),
+                    CultureRankingItem("Soja", 30),
+                    CultureRankingItem("Trigo", 25)
+                )
+
+                _rankingData.postValue(Result.success(rankingList))
             } catch (e: Exception) {
                 _rankingData.postValue(Result.failure(e))
             }

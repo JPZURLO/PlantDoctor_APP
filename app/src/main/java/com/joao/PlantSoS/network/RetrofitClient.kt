@@ -5,9 +5,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    private const val PLANT_DOCTOR_BASE_URL = "https://plantdoctor-backend.onrender.com/"
+    // URL base do seu backend Flask (Render)
+    private const val PLANT_DOCTOR_BASE_URL = "https://plantdoctor-backend.onrender.com/api/"
     private const val WEATHER_API_BASE_URL = "https://api.weatherapi.com/"
 
+    // Instância do Retrofit para o backend Flask
     private val plantDoctorRetrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(PLANT_DOCTOR_BASE_URL)
@@ -15,6 +17,7 @@ object RetrofitClient {
             .build()
     }
 
+    // Instância do Retrofit para a API de clima
     private val weatherApiRetrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(WEATHER_API_BASE_URL)
@@ -22,13 +25,15 @@ object RetrofitClient {
             .build()
     }
 
-    // ✅ CORRIGIDO: Agora usa a interface correta
+    // Serviço de IA do PlantDoctor (Flask)
     val plantDoctorApiService: PlantDoctorApiService by lazy {
         plantDoctorRetrofit.create(PlantDoctorApiService::class.java)
     }
 
-    // ✅ CORRIGIDO: Agora usa a interface correta
+    // Serviço de Clima
     val weatherApiService: WeatherApiService by lazy {
         weatherApiRetrofit.create(WeatherApiService::class.java)
     }
+
+
 }

@@ -1,5 +1,7 @@
 package com.joao.PlantSoS.activities
 
+// ❌ O 'import android.R.id.toggle' FOI REMOVIDO ❌
+import android.view.MenuItem
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
@@ -7,7 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -22,8 +23,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.widget.NestedScrollView // ✅ IMPORT CORRIGIDO
+import androidx.appcompat.app.ActionBarDrawerToggle // <-- Este é o import correto
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -34,34 +35,24 @@ import com.joao.PlantSoS.CultureCycleRepository
 import com.joao.PlantSoS.R
 import com.joao.PlantSoS.models.OldPlantingsAdapter
 import com.joao.PlantSoS.models.HistoryAdapter
-// ✅ IMPORTS ADICIONADOS
-import com.joao.PlantSoS.adapter.DiagnosisHistoryAdapter
 import com.joao.PlantSoS.viewmodel.CultureDetailsViewModel
-// ---
 import com.joao.PlantSoS.models.PlantedCulture
 import com.joao.PlantSoS.PlantingCalendar
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CameraExamineActivity : AppCompatActivity() {
-    // Placeholder para a nova Activity
-}
-
 class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    // ✅ VIEWMODEL CORRETO (o que tem a lógica de diagnóstico)
     private val viewModel: CultureDetailsViewModel by viewModels()
 
     // --- Adapters
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var oldPlantingsAdapter: OldPlantingsAdapter
-    // ✅ ADICIONADO
-    private lateinit var diagnosisHistoryAdapter: DiagnosisHistoryAdapter
 
     // --- Views
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
-    private lateinit var cultureDataScrollView: NestedScrollView // ✅ TIPO CORRIGIDO
+    private lateinit var cultureDataScrollView: NestedScrollView
     private lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
     private lateinit var ivCultureImage: ImageView
     private lateinit var tvPlantingDate: TextView
@@ -73,9 +64,6 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
     private lateinit var tvOldPlantingsHeader: TextView
     private lateinit var recyclerViewOldPlantings: RecyclerView
     private lateinit var recyclerViewHistory: RecyclerView
-    // ✅ ADICIONADOS
-    private lateinit var tvDiagnosisHistoryHeader: TextView
-    private lateinit var recyclerViewDiagnosisHistory: RecyclerView
 
     // --- Variáveis de Estado
     private var cultureId: Int = -1
@@ -83,6 +71,9 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
     private var cultureName: String? = null
     private var cultureImageUrl: String? = null
     private var plantingDate: Calendar? = null
+
+    // ✅ PASSO 1: A variável 'toggle' é declarada aqui
+    private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,32 +85,31 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
         // --- Configuração do Menu Lateral ---
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
-        val toggle = ActionBarDrawerToggle(
+
+        // ✅ PASSO 2: A variável é inicializada aqui (remova o 'val')
+        toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+        toggle.drawerArrowDrawable.color = resources.getColor(android.R.color.black)
         navView.setNavigationItemSelectedListener(this)
         // --- Fim Menu Lateral ---
 
-        // ✅ LÓGICA DE INTENT ATUALIZADA (para funcionar com AMBOS os fluxos)
-        // Tenta pegar o ID do fluxo de Diagnóstico
+
+        // Lógica de Intent
         cultureId = intent.getIntExtra("EXTRA_CULTURE_ID", -1)
         if (cultureId == -1) {
-            // Se não veio, tenta pegar do fluxo de Minhas Culturas
             cultureId = intent.getIntExtra("CULTURE_ID", -1)
         }
-
-        // Pega os outros dados (só o fluxo de Minhas Culturas envia, mas não faz mal)
         cultureName = intent.getStringExtra("CULTURE_NAME")
         cultureImageUrl = intent.getStringExtra("CULTURE_IMAGE_URL")
 
-        // Se, depois de tudo, o ID for -1, é um erro.
         if (cultureId == -1) {
             Toast.makeText(this, "Erro: ID da cultura não encontrado", Toast.LENGTH_LONG).show()
             finish()
-            return // Sai do onCreate
+            return
         }
 
         // --- Encontrar TODAS as Views ---
@@ -133,18 +123,14 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
         tvOldPlantingsHeader = findViewById(R.id.tv_old_plantings_header)
         recyclerViewOldPlantings = findViewById(R.id.recycler_view_old_plantings)
         recyclerViewHistory = findViewById(R.id.recycler_view_history)
-        // ✅ VIEWS DE DIAGNÓSTICO
-        tvDiagnosisHistoryHeader = findViewById(R.id.tv_diagnosis_history_header)
-        recyclerViewDiagnosisHistory = findViewById(R.id.recycler_view_diagnosis_history)
 
         // --- Configurar UI ---
-        renderCultureDetails(cultureImageUrl) // Renderiza nome/imagem (pode ser nulo no fluxo de diagnóstico, o ViewModel corrige depois)
+        renderCultureDetails(cultureImageUrl)
         setupDrawerHeader()
 
         // --- Configurar Listas ---
         setupRecyclerView()
         setupOldPlantingsRecyclerView()
-        setupDiagnosisHistoryRecyclerView() // ✅ CONFIGURA O NOVO ADAPTER
 
         // --- Configurar Observers e Listeners ---
         setupObservers()
@@ -152,20 +138,17 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
         fabAddHistory.setOnClickListener { showAddHistoryDialog() }
         btnNewPlantingCycle.setOnClickListener {
             viewModel.clearState()
-
             this.plantedCultureId = -1
             this.plantingDate = null
             updatePlantingDateText()
             calculateAndDisplayHarvestDate()
             historyAdapter.submitList(emptyList())
-
             Toast.makeText(this, "Inicie o novo ciclo, selecione a Data de Plantio.", Toast.LENGTH_LONG).show()
             showDatePickerDialog()
         }
 
         // --- Carregar Dados ---
         getToken()?.let { token ->
-            // ✅ CHAMA A FUNÇÃO CORRETA que carrega TUDO (incluindo diagnósticos)
             viewModel.fetchAllCultureData(token, cultureId)
         }
     }
@@ -173,9 +156,11 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_examine_camera -> {
-                // ... (Lógica da Câmera/IA) ...
+                Log.d("CultureDetails", "Lançando CameraExamineActivity (Fluxo 2)...")
                 val intent = Intent(this, CameraExamineActivity::class.java).apply {
                     putExtra("CULTURE_ID", cultureId)
+                    putExtra("CULTURE_NAME", cultureName)
+                    putExtra("CULTURE_IMAGE_URL", cultureImageUrl)
                 }
                 startActivity(intent)
             }
@@ -185,17 +170,13 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
                 Toast.makeText(this, "Visualizando Histórico de Ciclos.", Toast.LENGTH_SHORT).show()
             }
 
-            // ✅ ADICIONADO: Clique para rolar até o histórico de diagnósticos
-            // (Certifique-se que o ID 'nav_culture_diagnosis_history' existe no seu XML de menu)
             R.id.nav_culture_diagnosis_history -> {
-                // Rola a tela suavemente até a posição (top) do título
-                cultureDataScrollView.post {
-                    if (tvDiagnosisHistoryHeader.visibility == View.VISIBLE) {
-                        cultureDataScrollView.smoothScrollTo(0, tvDiagnosisHistoryHeader.top)
-                    } else {
-                        Toast.makeText(this, "Nenhum diagnóstico encontrado", Toast.LENGTH_SHORT).show()
-                    }
+                // Abre a nova tela
+                val intent = Intent(this, DiagnosisHistoryActivity::class.java).apply {
+                    putExtra("CULTURE_ID", cultureId)
+                    putExtra("CULTURE_NAME", cultureName)
                 }
+                startActivity(intent)
             }
 
             R.id.nav_culture_dates -> {
@@ -215,43 +196,21 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
         return true
     }
 
-    // ✅ FUNÇÃO ADICIONADA: Configura o adapter de diagnóstico
-    private fun setupDiagnosisHistoryRecyclerView() {
-        diagnosisHistoryAdapter = DiagnosisHistoryAdapter()
-        recyclerViewDiagnosisHistory.adapter = diagnosisHistoryAdapter
-        recyclerViewDiagnosisHistory.layoutManager = LinearLayoutManager(this)
-        recyclerViewDiagnosisHistory.isNestedScrollingEnabled = false // Para rolar dentro do NestedScrollView
+    // ✅ PASSO 3: Esta função agora enxerga a variável 'toggle' correta
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Adicionado '::toggle.isInitialized' para segurança
+        if (::toggle.isInitialized && toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupObservers() {
-        // ✅ OBSERVER ADICIONADO: Preenche a lista de diagnósticos
-        viewModel.diagnosisHistory.observe(this) { diagnosisList ->
-            if (diagnosisList.isNotEmpty()) {
-                Log.d("CultureDetails", "Carregando ${diagnosisList.size} diagnósticos na lista.")
-                diagnosisHistoryAdapter.submitList(diagnosisList)
-                tvDiagnosisHistoryHeader.visibility = View.VISIBLE
-                recyclerViewDiagnosisHistory.visibility = View.VISIBLE
-            } else {
-                Log.d("CultureDetails", "Nenhum diagnóstico encontrado.")
-                tvDiagnosisHistoryHeader.visibility = View.GONE
-                recyclerViewDiagnosisHistory.visibility = View.GONE
-            }
-        }
-
-        // (Opcional) Observar o resultado do salvamento do diagnóstico
-        viewModel.diagnosisSaveResult.observe(this) { result ->
-            // Apenas para feedback, se necessário. A navegação já acontece no fragmento.
-            result.onFailure {
-                Log.e("CultureDetails", "Observer: Falha ao salvar diagnóstico (vindo do fragmento)", it)
-            }
-        }
-
         // --- OBSERVERS DO SEU ARQUIVO ORIGINAL ---
         viewModel.allPlantings.observe(this) { allPlantings ->
             if (allPlantings.size > 1) {
                 val oldPlantings = allPlantings.drop(1)
                 oldPlantingsAdapter.submitList(oldPlantings)
-
                 tvOldPlantingsHeader.visibility = View.VISIBLE
                 recyclerViewOldPlantings.visibility = View.VISIBLE
                 tvOldPlantingsHeader.text = "Plantios Anteriores (${oldPlantings.size})"
@@ -272,11 +231,7 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
                 Toast.makeText(this, "Carregando dados do plantio mais recente...", Toast.LENGTH_SHORT).show()
                 this.plantedCultureId = existingPlanting.id
 
-                // Se o nome/imagem não vieram do Intent (fluxo de diagnóstico), atualiza agora
                 if (cultureName == null) {
-                    // TODO: Atualize 'cultureName' e 'cultureImageUrl' a partir do 'existingPlanting'
-                    // this.cultureName = existingPlanting.cultureName
-                    // this.cultureImageUrl = existingPlanting.cultureImageUrl
                     renderCultureDetails(this.cultureImageUrl)
                     setupDrawerHeader()
                 }
@@ -308,13 +263,10 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
         viewModel.newlyPlantedCulture.observe(this) { result ->
             result.onSuccess { newPlanting ->
                 Toast.makeText(this, "Plantio registrado com ID: ${newPlanting.id}", Toast.LENGTH_SHORT).show()
-
                 this.plantedCultureId = newPlanting.id
-
                 val token = getToken()!!
                 val descricaoPlantio = "Plantio da cultura '${cultureName}' realizado."
                 viewModel.saveHistoryEvent(token, plantedCultureId, "PLANTIO", descricaoPlantio)
-
                 val dataColheitaPrevista = calculateAndDisplayHarvestDate()
                 if (dataColheitaPrevista != null) {
                     val descricaoColheita = "Colheita prevista para $dataColheitaPrevista."
@@ -337,7 +289,7 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
         }
     }
 
-    // --- ✅ RESTANTE DAS FUNÇÕES (DO SEU ARQUIVO ORIGINAL) ---
+    // --- RESTANTE DAS FUNÇÕES (DO SEU ARQUIVO ORIGINAL) ---
 
     private fun setupDrawerHeader() {
         val headerView = navView.getHeaderView(0)
@@ -547,6 +499,19 @@ class CultureDetailsActivity : AppCompatActivity(), NavigationView.OnNavigationI
             tvHarvestDate.text = "Colheita Prevista: (Ciclo não definido)"
             Toast.makeText(this, "Não há previsão de ciclo para $cultureName", Toast.LENGTH_SHORT).show()
             null
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Recarrega os dados sempre que a tela voltar a ficar visível
+        val token = getToken()
+        if (token != null && cultureId != -1) {
+            Log.d("CultureDetailsActivity", "Atualizando dados da cultura (onResume)...")
+            viewModel.fetchAllCultureData(token, cultureId)
+        } else {
+            Log.e("CultureDetailsActivity", "Token ou cultureId inválido no onResume")
         }
     }
 }

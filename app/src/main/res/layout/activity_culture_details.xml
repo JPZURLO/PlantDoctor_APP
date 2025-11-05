@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CultureDetailsActivity"
+    tools:context=".activities.CultureDetailsActivity"
     tools:openDrawer="start">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -104,14 +104,6 @@
                 android:visibility="gone"
                 tools:listitem="@layout/item_old_planting" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Histórico de Atividades"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_history"
                 android:layout_width="match_parent"
@@ -119,25 +111,7 @@
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_history_event"
-                tools:itemCount="3"/>
-
-            <TextView
-                android:id="@+id/tv_diagnosis_history_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Histórico de Diagnósticos"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_diagnosis_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_diagnosis_history"
-                tools:itemCount="2"/>
+                android:layout_marginBottom="12dp" />
         </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -149,6 +123,7 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_add"
             android:contentDescription="Adicionar evento ao histórico" />
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

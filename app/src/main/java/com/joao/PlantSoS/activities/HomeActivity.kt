@@ -20,8 +20,6 @@ class HomeActivity : AppCompatActivity() {
     private val culturesFragment = CulturesFragment()
     private val diagnoseFragment = DiagnoseFragment()
     private val newsFragment = NewsFragment()
-    private val weatherFragment = WeatherFragment()
-
     private var activeFragment: Fragment = homeFragment
     private lateinit var bottomNav: BottomNavigationView // Referência à barra de navegação
 
@@ -34,7 +32,6 @@ class HomeActivity : AppCompatActivity() {
             add(R.id.fragment_container, culturesFragment, "2").hide(culturesFragment)
             add(R.id.fragment_container, diagnoseFragment, "3").hide(diagnoseFragment)
             add(R.id.fragment_container, newsFragment, "4").hide(newsFragment)
-            add(R.id.fragment_container, weatherFragment, "5").hide(weatherFragment)
         }.commit()
 
         bottomNav = findViewById(R.id.bottom_navigation) // Encontra a barra

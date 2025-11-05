@@ -21,10 +21,5 @@
         android:icon="@drawable/ic_news"
         android:title="Notícias" />
 
-    <item
-        android:id="@+id/nav_culture_diagnosis_history"
-        android:icon="@drawable/ic_history"
-        android:title="Histórico de Diagnósticos" />
-
 
 </menu>

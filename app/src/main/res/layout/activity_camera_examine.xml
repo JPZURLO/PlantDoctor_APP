@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CameraExamineActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_examine"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Resultado da Análise"
+        app:titleTextColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_diagnosis_photo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Foto para análise"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_examine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        tools:src="@drawable/ic_leaf" />
+
+    <TextView
+        android:id="@+id/tv_diagnosis_result_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/iv_diagnosis_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Míldio da Soja" />
+
+    <TextView
+        android:id="@+id/tv_diagnosis_observation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_diagnosis_result_name"
+        app:layout_constraintStart_toStartOf="@id/tv_diagnosis_result_name"
+        app:layout_constraintEnd_toEndOf="@id/tv_diagnosis_result_name"
+        tools:text="IA detectou 'Míldio da Soja' com 95% de certeza." />
+
+    <ProgressBar
+        android:id="@+id/pb_loading_analysis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="@id/iv_diagnosis_photo"
+        app:layout_constraintBottom_toBottomOf="@id/iv_diagnosis_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btn_save_diagnosis"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Salvar Diagnóstico"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

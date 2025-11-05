@@ -64,5 +64,9 @@ class HomeFragment : Fragment() {
         cardMyCultures.setOnClickListener {
             (activity as? HomeActivity)?.navigateToTab(R.id.nav_cultures)
         }
+
+        cardWeather.setOnClickListener {
+            (activity as? HomeActivity)?.navigateTo(WeatherFragment())
+        }
     }
 }

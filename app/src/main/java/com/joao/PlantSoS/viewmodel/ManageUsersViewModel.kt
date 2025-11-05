@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import com.joao.PlantSoS.models.User
 import com.joao.PlantSoS.network.PlantDoctorApiService
 import com.joao.PlantSoS.network.RetrofitClient
-import com.joao.PlantSoS.network.UserUpdateRequest
+import com.joao.PlantSoS.models.UserUpdateRequest
 import kotlinx.coroutines.launch
 
 class ManageUsersViewModel(application: Application) : AndroidViewModel(application) {

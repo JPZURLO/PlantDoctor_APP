@@ -62,6 +62,7 @@ dependencies {
 
     // Imagens - Escolhendo apenas Coil por ser mais moderno
     implementation("io.coil-kt:coil:2.5.0")
+    implementation(libs.androidx.recyclerview)
 
     // Testes
     testImplementation(libs.junit)
@@ -84,11 +85,16 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     //construcao da IA
-    implementation("org.tensorflow:tensorflow-lite:2.15.0")
     // Core TFLite runtime
     implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
-
-    implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.3")
     // Ajuda a carregar o modelo e processar resultados
+    implementation("org.tensorflow:tensorflow-lite:2.9.0")
+// A biblioteca "crua"
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
+// Para o lifecycleScope
+
 
 }

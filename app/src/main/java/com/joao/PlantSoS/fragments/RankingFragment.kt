@@ -41,7 +41,7 @@ class RankingFragment : Fragment() {
     }
 
     private fun setupChart() {
-        pieChart.isDrawHoleEnabled = true // Buraco no meio
+        pieChart.isDrawHoleEnabled = true
         pieChart.setUsePercentValues(true)
         pieChart.setEntryLabelTextSize(12f)
         pieChart.setEntryLabelColor(Color.BLACK)
@@ -50,7 +50,6 @@ class RankingFragment : Fragment() {
         pieChart.setCenterTextColor(Color.WHITE)
         pieChart.description.isEnabled = false
 
-        // Configura a legenda
         val legend = pieChart.legend
         legend.textColor = Color.WHITE
         legend.textSize = 14f
@@ -65,32 +64,23 @@ class RankingFragment : Fragment() {
                     return@onSuccess
                 }
 
-                // 1. Cria as "entradas" para o gráfico de pizza
                 val entries = ArrayList<PieEntry>()
                 for (item in rankingList) {
-                    entries.add(PieEntry(item.count.toFloat(), item.name))
+                    entries.add(PieEntry(item.count.toFloat(), item.culture))
                 }
 
-                // 2. Define as cores
                 val colors = ArrayList<Int>()
-                for (color in ColorTemplate.MATERIAL_COLORS) {
-                    colors.add(color)
-                }
-                for (color in ColorTemplate.VORDIPLOM_COLORS) {
-                    colors.add(color)
-                }
+                colors.addAll(ColorTemplate.MATERIAL_COLORS.toList())
+                colors.addAll(ColorTemplate.VORDIPLOM_COLORS.toList())
 
-                // 3. Cria o conjunto de dados
                 val dataSet = PieDataSet(entries, "")
                 dataSet.colors = colors
                 dataSet.valueTextColor = Color.BLACK
                 dataSet.valueTextSize = 16f
                 dataSet.valueFormatter = PercentFormatter(pieChart)
 
-                // 4. Conecta os dados ao gráfico
-                val data = PieData(dataSet)
-                pieChart.data = data
-                pieChart.invalidate() // Manda o gráfico se redesenhar
+                pieChart.data = PieData(dataSet)
+                pieChart.invalidate()
             }
             result.onFailure { error ->
                 Toast.makeText(context, "Erro ao carregar ranking: ${error.message}", Toast.LENGTH_LONG).show()

@@ -2,10 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ✅ Declara que o app usa câmera, mas não é obrigatório -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!-- ✅ Permissões -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
@@ -16,49 +18,31 @@
         android:icon="@mipmap/plantsos"
         android:roundIcon="@mipmap/plantsos_round"
         android:supportsRtl="true"
-
         android:label="@string/app_name"
-
         android:theme="@style/Theme.PlantdSoS"
-
         android:usesCleartextTraffic="true"
-        tools:targetApi="26"> <activity
-        android:name=".activities.MainActivity"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+        tools:targetApi="33">
 
+        <!-- ✅ Atividade inicial -->
         <activity
-            android:name=".activities.HomeActivity"
-            android:exported="false" />
+            android:name=".activities.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-        <activity
-            android:name=".activities.CultureSelectionActivity"
-            android:exported="false" />
+        <!-- Demais atividades -->
+        <activity android:name=".activities.HomeActivity" android:exported="false" />
+        <activity android:name=".activities.CultureSelectionActivity" android:exported="false" />
+        <activity android:name=".activities.LoginActivity" android:exported="false" />
+        <activity android:name=".activities.OnboardingActivity" android:exported="false" />
+        <activity android:name=".activities.RegisterActivity" android:exported="false" />
+        <activity android:name=".activities.ManageCulturesActivity" android:exported="false" />
+        <activity android:name=".activities.RecoveryActivity" android:exported="false" />
 
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.OnboardingActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.RegisterActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.ManageCulturesActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.RecoveryActivity"
-            android:exported="false" />
-
+        <!-- Redefinição de senha com deep link -->
         <activity
             android:name=".activities.CreateNewPasswordActivity"
             android:exported="true">
@@ -67,29 +51,35 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="reset-password"
-                    android:scheme="plantdoctor" />
+                    android:scheme="plantdoctor"
+                    android:host="reset-password" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.EditUserActivity" android:exported="false" />
+        <activity android:name=".activities.CameraExamineActivity" android:exported="false" />
+        <activity android:name=".activities.PlantingCalendarActivity" android:exported="false" />
 
         <activity
             android:name=".activities.CultureDetailsActivity"
             android:exported="false"
             android:label="Detalhes da Cultura"
-            android:parentActivityName=".activities.HomeActivity"
+            android:parentActivityName=".activities.HomeActivity" />
 
+        <activity
+            android:name=".activities.DiagnosisHistoryActivity"
+            android:exported="false"
+            android:label="Histórico de Diagnósticos"
+            android:parentActivityName=".activities.CultureDetailsActivity" />
+
+        <activity
+            android:name=".activities.DiseaseExplanationActivity"
+            android:exported="false"
+            android:label="Sobre a Doença"
+            android:parentActivityName=".activities.CameraExamineActivity"
             />
 
-        <activity
-            android:name=".activities.PlantingCalendarActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.EditUserActivity"
-            android:exported="false" />
-
-        <!-- ✅ BLOCO DO FILEPROVIDER CORRIGIDO ✅ -->
-        <!-- Garante que tem os prefixos 'android:' corretos -->
+        <!-- ✅ BLOCO DO FILEPROVIDER -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -99,9 +89,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <!-- ✅ FIM DO BLOCO ✅ -->
 
     </application>
-
 </manifest>
-
