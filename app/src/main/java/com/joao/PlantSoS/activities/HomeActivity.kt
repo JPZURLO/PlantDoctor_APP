@@ -79,10 +79,6 @@ class HomeActivity : AppCompatActivity() {
                 switchFragment(diagnoseFragment)
                 return true
             }
-            R.id.nav_news -> {
-                switchFragment(newsFragment)
-                return true
-            }
             else -> return false
         }
     }
